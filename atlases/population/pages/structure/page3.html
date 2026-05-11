@@ -1,0 +1,75 @@
+<div id="page3" class="page">
+  <div class="page-content">
+    <div class="page-title">Families &amp; Genetic clusters</div>
+    <div class="page-subtitle">
+      NGSadmix structure · NAToRA pruning · ngsRelate kinship · K=2/3/4 ancestry decomposition
+    </div>
+
+    <div class="card card-stripe-fam">
+      <div class="card-header">
+        <div class="card-title">Structure design — two rounds</div>
+        <div class="card-status planned">scaffold · awaiting MODULE_2B</div>
+      </div>
+      <div style="margin-bottom: 8px;">
+        Hatchery cohorts violate Hardy-Weinberg by construction (siblings,
+        full broodlines, related broodstock). Two-round structure analysis
+        is required:
+      </div>
+      <ol class="pop-list">
+        <li><b>Round 1</b> — all 226 samples → reflects family + broodline structure.
+            Useful for visualizing the actual cohort composition; not a population-genetic K estimate.</li>
+        <li><b>Round 2</b> — NAToRA-pruned 81 unrelated samples → cleaner K estimate
+            for the population-level structure, free of within-family signal.</li>
+      </ol>
+      <div style="color: var(--ink-dim); margin-top: 8px;">
+        K clusters in this dataset reflect <b>hatchery broodline structure</b>,
+        not species admixture. The cohort is pure <i>C. gariepinus</i>.
+      </div>
+    </div>
+
+    <div class="card card-stripe-fam">
+      <div class="card-header">
+        <div class="card-title">Planned panels</div>
+        <div class="card-status planned">phase B work</div>
+      </div>
+      <div class="pop-panels-2col">
+        <div class="panel-slot">
+          <div class="panel-slot-title">NGSadmix Q-bar plot — round 1</div>
+          <div class="panel-slot-desc">All 226 samples, K=2/3/4/5 stacked bars; sorted by dominant Q assignment.</div>
+          <div class="panel-slot-mockup">░░░ Q-bar mockup ░░░</div>
+          <div class="panel-slot-foot">feeds: MODULE_2B NGSadmix output</div>
+        </div>
+        <div class="panel-slot">
+          <div class="panel-slot-title">NGSadmix Q-bar plot — round 2</div>
+          <div class="panel-slot-desc">81 unrelated samples (NAToRA-pruned), same K range; cleaner population-level signal.</div>
+          <div class="panel-slot-mockup">░░░ Q-bar mockup ░░░</div>
+          <div class="panel-slot-foot">feeds: MODULE_2B NGSadmix on pruned subset</div>
+        </div>
+        <div class="panel-slot">
+          <div class="panel-slot-title">Kinship heatmap</div>
+          <div class="panel-slot-desc">Pairwise π̂ (ngsRelate) sample × sample, with broodline annotation.</div>
+          <div class="panel-slot-mockup">░░░ heatmap mockup ░░░</div>
+          <div class="panel-slot-foot">feeds: ngsRelate output</div>
+        </div>
+        <div class="panel-slot">
+          <div class="panel-slot-title">NAToRA pruning diagram</div>
+          <div class="panel-slot-desc">Hungarian-algorithm graph — kept/removed samples shown as connected components above π̂ threshold.</div>
+          <div class="panel-slot-mockup">░░░ graph mockup ░░░</div>
+          <div class="panel-slot-foot">feeds: NAToRA output + ngsRelate matrix</div>
+        </div>
+        <div class="panel-slot">
+          <div class="panel-slot-title">PCAngsd PCA</div>
+          <div class="panel-slot-desc">Genome-wide PC1 vs PC2 colored by family + broodline; outliers flagged.</div>
+          <div class="panel-slot-mockup">░░░ PCA mockup ░░░</div>
+          <div class="panel-slot-foot">feeds: PCAngsd genome-wide</div>
+        </div>
+        <div class="panel-slot">
+          <div class="panel-slot-title">evalAdmix residuals</div>
+          <div class="panel-slot-desc">Per-K residual heatmap; choosing K with lowest residual structure.</div>
+          <div class="panel-slot-mockup">░░░ residuals mockup ░░░</div>
+          <div class="panel-slot-foot">feeds: evalAdmix output</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

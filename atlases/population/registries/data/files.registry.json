@@ -1,0 +1,6 @@
+{
+  "$schema": "../../../../core/registry_core.schema.json",
+  "_doc": "Static file inventory for the Population Atlas. Round 1 is empty — none of the carved-out scaffold pages reads a file on its own (the page8/page9 verbatim-lifted JS reads window.state.* in-memory only, populated by user uploads via the page toolbars). Round 2+ adds entries paired with the layers in layers.registry.json (per_sample_stats.json, family_clusters.json, hatchery_health.json, etc.) once the upstream pipelines emit them.",
+  "_round1_status": "empty — no files needed yet.",
+  "files": {}
+}

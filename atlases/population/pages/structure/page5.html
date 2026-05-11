@@ -1,0 +1,104 @@
+<div id="page5" class="page">
+  <div class="page-content">
+    <div class="page-title">Diversity</div>
+    <div class="page-subtitle">
+      Cohort-level summary · per-chromosome and per-window θπ in the <b>Diversity Atlas</b>
+    </div>
+
+    <div class="da-callout">
+      <div class="da-callout-text">
+        <b>Per-chromosome θπ (28 LGs), the genome-wide θπ landscape, the 19
+        outlier hotspot windows, and the per-sample × per-hotspot heatmap
+        all live in the <b>Diversity Atlas</b></b> — that's where you go to
+        cross-reference any inversion candidate against the cohort θπ
+        signal. The Local PCA Scrubber's <i>page 12 (local PCA θπ)</i>
+        remains the per-window active-exploration tool inside the
+        Inversion Atlas.
+      </div>
+      <a class="da-callout-btn" href="Diversity_atlas.html#page2">
+        Open <b>Diversity Atlas → Chromosomes</b> →
+      </a>
+    </div>
+
+    <div class="card card-stripe-div">
+      <div class="card-header">
+        <div class="card-title">Cohort-level headline numbers (ST1 / ST3)</div>
+        <div class="card-status">summary</div>
+      </div>
+      <div>
+        Cohort-mean θπ in 500 kb non-overlapping windows across the 28
+        <i>C. gariepinus</i> pseudochromosomes. The <i>per-window</i>
+        signal carries the biology — <i>per-chromosome</i> means are
+        nearly uniform.
+      </div>
+      <div class="summary-grid">
+        <div class="summary-cell">
+          <div class="lbl">mean θπ</div>
+          <div class="val">4.50 × 10⁻³</div>
+          <div class="sub">1,895 windows</div>
+        </div>
+        <div class="summary-cell">
+          <div class="lbl">median θπ</div>
+          <div class="val">4.86 × 10⁻³</div>
+          <div class="sub">99th pct = 5.27 × 10⁻³</div>
+        </div>
+        <div class="summary-cell">
+          <div class="lbl">per-chr range</div>
+          <div class="val">4.28–4.72 × 10⁻³</div>
+          <div class="sub">28 LGs, IQR &lt; 7 × 10⁻⁴</div>
+        </div>
+        <div class="summary-cell">
+          <div class="lbl">top hotspot</div>
+          <div class="val">LG22 19.0–19.5 Mb</div>
+          <div class="sub">1.07 × 10⁻² (2.4× mean)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-stripe-div">
+      <div class="card-header">
+        <div class="card-title">Available scales (from MODULE_3)</div>
+        <div class="card-status">file paths documented</div>
+      </div>
+      <div class="pg pop-pg-scales">
+        <div class="pg-header">scale</div>
+        <div class="pg-header">window / step</div>
+        <div class="pg-header">file pattern</div>
+        <div class="pg-header">use</div>
+
+        <div><code>chrom-scale</code></div>
+        <div>500 kb / 500 kb</div>
+        <div><code>*.win500000.step500000.pestPG</code></div>
+        <div>manuscript headline + ST1, ST3, Diversity Atlas tab 2/3</div>
+
+        <div><code>50 kb medium</code></div>
+        <div>50 kb / 10 kb</div>
+        <div><code>multiscale/*win50000.step10000*</code></div>
+        <div>candidate-region tracks · Inversion Atlas page 12</div>
+
+        <div><code>10 kb fine</code></div>
+        <div>10 kb / 2 kb</div>
+        <div><code>multiscale/*win10000.step2000*</code></div>
+        <div>fine-scale anomalies</div>
+
+        <div><code>5 kb very-fine</code></div>
+        <div>5 kb / 1 kb</div>
+        <div><code>multiscale/*win5000.step1000*</code></div>
+        <div>boundary-zone diversity (limited statistical power)</div>
+      </div>
+    </div>
+
+    <div class="card card-stripe-div">
+      <div class="card-header">
+        <div class="card-title">What's in the Diversity Atlas for this topic</div>
+        <div class="card-status">depth pointer</div>
+      </div>
+      <ul class="pop-list">
+        <li><b>Tab 2 — Chromosomes</b>: 28-LG sortable θπ table (ST1) with mean / median / IQR / Q25 / Q75 / range, plus a ranked bar chart with Q25–Q75 whiskers</li>
+        <li><b>Tab 3 — Hotspots</b>: 19 outlier windows table, auto-clustered (LG12 4.5–8.5 Mb is one localised peak of 9 windows, not 9 loci)</li>
+        <li><b>Tab 3 — Genome-wide θπ landscape</b> with all 19 outlier ticks marked at their genomic positions</li>
+        <li><b>Tab 3 — 226 × 19 hotspot heatmap</b>: per-sample θπ at every outlier window</li>
+      </ul>
+    </div>
+  </div>
+</div>

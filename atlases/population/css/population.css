@@ -1,0 +1,561 @@
+/* atlases/population/css/population.css
+ * =====================================================================
+ * The population atlas's stylesheet bundle.
+ *
+ * This is a single-file extract of the population-specific portion of
+ * the legacy stylesheet (legacy/Population_atlas.html lines 8-628).
+ * It includes:
+ *   - population-private accent palette (yellow/amber) + light + academic
+ *     theme variants (these were declared on :root in the legacy file;
+ *     here they sit on html[data-atlas-population] so they only override
+ *     tokens.css when the population atlas is mounted — and they override
+ *     the inversion atlas's blue accent only on its pages)
+ *   - .card / .card-header / .card-status — population-flavoured card
+ *     chrome with topic-coloured left stripes (samples, qc, fam, het, div,
+ *     roh, breed)
+ *   - .pg / .panel-slot / .summary-grid / .summary-cell — planning-grid
+ *     and panel-mockup layouts
+ *   - .da-callout — green cross-atlas callout pointing to Diversity Atlas
+ *   - .bp-* — breeding-page traffic-light table + toolbar + legend
+ *   - .fhh-* — F_ROH × H plane scatter + comparator table + verdict colors
+ *   - .caution-banner — amber informational banner
+ *   - .pop-* — small per-fragment utility classes introduced when inline
+ *     styles were lifted out of the carved-out HTML fragments
+ *
+ * Loaded by: declared in atlases/population/manifest.json's "stylesheets"
+ * field, picked up by the atlas-core shell at atlas-register time.
+ *
+ * Uses tokens from atlas-core/css/tokens.css. Population-specific accents
+ * override those tokens by being applied with higher CSS specificity (the
+ * shell's html element + the atlas-private --pop-* tokens defined here).
+ *
+ * Future work: split into per-page stylesheets so each page only loads
+ * what it needs (per the inversion-atlas manifest's _stylesheets_doc).
+ * =====================================================================
+ */
+
+/* ── Population-atlas accent palette + theme overrides ──────────────── */
+
+:root {
+  /* Population's slot in the four-atlas color system is yellow/amber.
+     These tokens shadow a subset of tokens.css so that population pages
+     get the yellow accent while the inversion atlas keeps its blue. */
+  --accent: #e8c44c;
+  --accent-2: #4fa3ff;
+  --good: #5fd49a;
+  --bad: #e0555c;
+  --neutral: #8a94a3;
+  --pop-samples: #e8c44c;
+  --pop-qc:      #f2d570;
+  --pop-fam:     #c9a234;
+  --pop-het:     #d6b540;
+  --pop-div:     #ecd075;
+  --pop-roh:     #a8821f;
+  --pop-breed:   #d4a838;
+}
+
+html[data-theme="light"] {
+  --accent:       #ca8a04;
+  --accent-2:     #2563eb;
+  --good:         #16a34a;
+  --bad:          #dc2626;
+  --neutral:      #5b6573;
+  --pop-samples:  #ca8a04;
+  --pop-qc:       #eab308;
+  --pop-fam:      #a16207;
+  --pop-het:      #b45309;
+  --pop-div:      #facc15;
+  --pop-roh:      #713f12;
+  --pop-breed:    #b45309;
+}
+
+html[data-theme="academic"] {
+  --accent:       #a87e3c;
+  --accent-2:     #2c5d8c;
+  --good:         #4f7a4d;
+  --bad:          #8c2f2f;
+  --neutral:      #6e6f74;
+  --pop-samples:  #a87e3c;
+  --pop-qc:       #c19a55;
+  --pop-fam:      #8a6420;
+  --pop-het:      #9d7a35;
+  --pop-div:      #c5a268;
+  --pop-roh:      #6b4d18;
+  --pop-breed:    #9d7a35;
+}
+
+/* ── Page system ────────────────────────────────────────────────────── */
+
+.page { display: block; flex: 1; overflow-y: auto; }
+
+.page-content {
+  padding: 32px 32px 48px;
+  max-width: 1180px;
+  margin: 0 auto;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  line-height: 1.65;
+}
+.page-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--ink);
+}
+.page-subtitle {
+  font-size: 11.5px;
+  color: var(--ink-dim);
+  margin-bottom: 24px;
+  letter-spacing: 0.02em;
+}
+
+/* ── Card chrome ────────────────────────────────────────────────────── */
+
+.card {
+  background: var(--panel-2);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 16px 18px;
+  margin-bottom: 18px;
+}
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 10px;
+}
+.card-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.card-status {
+  font-size: 9.5px;
+  color: var(--ink-dim);
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+}
+.card-status.ready { color: var(--good); border-color: var(--good); }
+.card-status.planned { color: var(--ink-dim); }
+
+/* Topic stripes — color-code each card by population sub-theme. */
+.card-stripe-samples { border-left: 3px solid var(--pop-samples); padding-left: 16px; }
+.card-stripe-qc      { border-left: 3px solid var(--pop-qc);      padding-left: 16px; }
+.card-stripe-fam     { border-left: 3px solid var(--pop-fam);     padding-left: 16px; }
+.card-stripe-het     { border-left: 3px solid var(--pop-het);     padding-left: 16px; }
+.card-stripe-div     { border-left: 3px solid var(--pop-div);     padding-left: 16px; }
+.card-stripe-roh     { border-left: 3px solid var(--pop-roh);     padding-left: 16px; }
+.card-stripe-breed   { border-left: 3px solid var(--pop-breed);   padding-left: 16px; }
+
+/* ── Planning grids (.pg) + panel slots ─────────────────────────────── */
+
+.pg {
+  display: grid;
+  gap: 6px 12px;
+  font-size: 10.5px;
+  align-items: baseline;
+}
+.pg-header {
+  font-weight: 600;
+  color: var(--ink-dim);
+}
+.pg code {
+  font-family: var(--mono);
+  color: var(--ink);
+  background: var(--panel-3);
+  padding: 1px 4px;
+  border-radius: 2px;
+  font-size: 10px;
+}
+
+.panel-slot {
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 10px 12px;
+  min-height: 130px;
+  display: flex;
+  flex-direction: column;
+}
+.panel-slot-title {
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.panel-slot-desc {
+  color: var(--ink-dim);
+  font-size: 10px;
+  margin-bottom: 8px;
+  flex: 0 0 auto;
+}
+.panel-slot-mockup {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--panel-2);
+  border: 1px dashed var(--rule);
+  border-radius: 2px;
+  color: var(--ink-dimmer);
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+}
+.panel-slot-foot {
+  color: var(--ink-dim);
+  font-size: 9.5px;
+  margin-top: 6px;
+}
+
+.status-pill { color: var(--ink-dimmer); }
+.status-pill.ready { color: var(--good); }
+.status-pill.partial { color: var(--accent); }
+
+/* ── Cross-atlas callout ────────────────────────────────────────────── */
+
+.da-callout {
+  margin-top: 14px; margin-bottom: 14px;
+  background: rgba(72, 200, 120, 0.07);
+  border: 1px solid rgba(72, 200, 120, 0.55);
+  border-left: 3px solid #3cc08a;
+  border-radius: 4px;
+  padding: 14px 18px;
+  display: flex; align-items: center; gap: 14px;
+  flex-wrap: wrap;
+}
+.da-callout-text {
+  flex: 1 1 60%; min-width: 240px;
+  font-size: 11px; line-height: 1.55; color: var(--ink-dim);
+}
+.da-callout-text b { color: var(--ink); font-weight: 600; }
+.da-callout-btn {
+  background: rgba(72, 200, 120, 0.20);
+  border: 1px solid rgba(72, 200, 120, 0.85);
+  color: var(--ink);
+  padding: 7px 14px; border-radius: 3px;
+  font-family: var(--mono); font-size: 11px;
+  text-decoration: none; white-space: nowrap;
+  transition: background 80ms;
+}
+.da-callout-btn:hover { background: rgba(72, 200, 120, 0.32); }
+.da-callout-btn b { font-weight: 600; }
+
+/* ── Summary cells (cohort-headline-numbers cards) ──────────────────── */
+
+.summary-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px 14px; margin-top: 10px;
+}
+.summary-cell {
+  background: var(--panel); border: 1px solid var(--rule);
+  border-radius: 3px; padding: 8px 12px;
+}
+.summary-cell .lbl { font-size: 9.5px; color: var(--ink-dim);
+                     letter-spacing: 0.05em; text-transform: uppercase;
+                     margin-bottom: 2px; }
+.summary-cell .val { font-size: 14px; font-weight: 600; color: var(--ink);
+                     font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.summary-cell .sub { font-size: 9.5px; color: var(--ink-dim); margin-top: 2px; }
+
+/* ── Planned-fields tables (samples + qc pages) ─────────────────────── */
+
+table.fields {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10.5px;
+}
+table.fields th, table.fields td {
+  text-align: left;
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+table.fields th {
+  color: var(--ink-dim);
+  font-weight: 600;
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+table.fields td.field-name {
+  font-family: var(--mono);
+  color: var(--ink);
+  width: 200px;
+}
+table.fields td.field-source {
+  color: var(--ink-dim);
+  width: 220px;
+  font-size: 10px;
+}
+table.fields code {
+  font-family: var(--mono);
+  color: var(--ink);
+  background: var(--panel-3);
+  padding: 1px 4px;
+  border-radius: 2px;
+  font-size: 10px;
+}
+
+/* ── Breeding page (page8) ─────────────────────────────────────────── */
+
+.bp-toolbar {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.bp-tb-spacer { flex: 1; }
+.bp-view-toggle {
+  display: inline-flex; border: 1px solid var(--rule); border-radius: 3px;
+  overflow: hidden;
+}
+.bp-view-toggle button {
+  background: var(--panel-2); color: var(--ink-dim); border: none;
+  padding: 5px 12px; font-family: var(--mono); font-size: 10.5px;
+  cursor: pointer; border-right: 1px solid var(--rule);
+}
+.bp-view-toggle button:last-child { border-right: none; }
+.bp-view-toggle button.active {
+  background: var(--panel-3); color: var(--ink);
+}
+.bp-view-toggle button:hover:not(.active) { color: var(--ink); }
+.bp-tb-btn {
+  padding: 5px 11px; border-radius: 3px;
+  background: var(--panel-3); color: var(--ink); border: 1px solid var(--rule);
+  font-family: var(--mono); font-size: 10.5px; cursor: pointer;
+}
+.bp-tb-btn:hover { border-color: var(--accent); }
+.bp-tb-label {
+  font-size: 10.5px; color: var(--ink-dim); font-family: var(--mono);
+  display: flex; align-items: center; gap: 5px;
+}
+.bp-tb-label select {
+  background: var(--panel-2); color: var(--ink); border: 1px solid var(--rule);
+  border-radius: 3px; padding: 3px 6px; font-family: var(--mono); font-size: 10.5px;
+}
+
+.bp-table {
+  width: 100%; border-collapse: collapse;
+  font-family: var(--mono); font-size: 11px;
+  background: var(--panel-2);
+  border: 1px solid var(--rule); border-radius: 4px;
+  margin-bottom: 14px;
+}
+.bp-table th {
+  text-align: left; padding: 9px 12px; font-weight: 600;
+  color: var(--ink); border-bottom: 1px solid var(--rule);
+  background: var(--panel-3); font-size: 10px; letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.bp-table td {
+  padding: 10px 12px; vertical-align: middle;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink); line-height: 1.5;
+}
+.bp-table tbody tr:last-child td { border-bottom: none; }
+.bp-table tbody tr:hover td { background: var(--panel-3); }
+.bp-table .bp-sample {
+  font-weight: 600; color: var(--ink); white-space: nowrap;
+}
+.bp-table .bp-value { color: var(--ink-dim); font-size: 10.5px; }
+.bp-table .bp-source { color: var(--ink-dim); font-size: 10.5px; }
+.bp-table .bp-source a { color: var(--accent-2); text-decoration: none; }
+.bp-table .bp-source a:hover { text-decoration: underline; }
+
+.bp-dot {
+  display: inline-block; width: 12px; height: 12px; border-radius: 50%;
+  vertical-align: middle; margin-right: 6px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+.bp-dot.bp-green  { background: var(--good); }
+.bp-dot.bp-yellow { background: var(--accent); }
+.bp-dot.bp-red    { background: var(--bad); }
+.bp-dot-label {
+  font-size: 10.5px; color: var(--ink-dim); vertical-align: middle;
+}
+
+.bp-table.bp-detailed .bp-detail-only { display: table-cell; }
+.bp-table.bp-simple   .bp-detail-only { display: none; }
+.bp-table .bp-notes {
+  color: var(--ink-dimmer); font-size: 9.5px; margin-top: 3px;
+  line-height: 1.4;
+}
+
+.bp-empty {
+  padding: 22px; text-align: center; color: var(--ink-dimmer);
+  font-family: var(--mono); font-size: 11px; font-style: italic;
+  border: 1px dashed var(--rule); border-radius: 4px;
+  margin-bottom: 14px;
+}
+
+.bp-legend {
+  display: flex; gap: 18px; flex-wrap: wrap;
+  padding: 10px 14px; margin-bottom: 12px;
+  background: var(--panel); border: 1px solid var(--rule); border-radius: 3px;
+  font-family: var(--mono); font-size: 10.5px;
+}
+.bp-legend-item {
+  display: flex; align-items: center; gap: 6px;
+  color: var(--ink-dim);
+}
+.bp-legend-item b { color: var(--ink); font-weight: 600; }
+
+.bp-source-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px; margin-bottom: 12px;
+}
+.bp-source-card {
+  background: var(--panel); border: 1px solid var(--rule); border-radius: 3px;
+  padding: 9px 12px;
+}
+.bp-source-card .bp-sc-value {
+  font-size: 18px; font-weight: 600; color: var(--ink); font-family: var(--mono);
+}
+.bp-source-card .bp-sc-label {
+  font-size: 10px; color: var(--ink-dim); font-family: var(--mono); margin-top: 2px;
+}
+
+/* ── Hatchery health page (page9) — F_ROH × H plane ─────────────────── */
+
+.fhh-good    { color: var(--good);   font-weight: 600; }
+.fhh-review  { color: var(--accent); font-weight: 600; }
+.fhh-caution { color: var(--bad);    font-weight: 600; }
+.fhh-neutral { color: var(--ink-dim); font-weight: 600; font-style: italic; }
+
+.fhh-plot-svg { display: block; max-width: 100%; height: auto; }
+.fhh-plot-axis { stroke: var(--rule); stroke-width: 1; fill: none; }
+.fhh-plot-axis-label { fill: var(--ink-dim); font-family: var(--mono); font-size: 10px; }
+.fhh-plot-tick { fill: var(--ink-dimmer); font-family: var(--mono); font-size: 9px; }
+.fhh-plot-quadrant-line { stroke: var(--ink-dimmer); stroke-width: 1; stroke-dasharray: 3 3; }
+.fhh-plot-quadrant-label { fill: var(--ink-dimmer); font-family: var(--mono); font-size: 9px; font-style: italic; }
+.fhh-plot-point { stroke: var(--panel); stroke-width: 1.2; }
+.fhh-plot-point.fhh-good    { fill: var(--good);   }
+.fhh-plot-point.fhh-review  { fill: var(--accent); }
+.fhh-plot-point.fhh-caution { fill: var(--bad);    }
+.fhh-plot-point.fhh-neutral { fill: var(--ink-dim); }
+.fhh-plot-point.fhh-focal   { stroke: var(--ink); stroke-width: 2; }
+.fhh-plot-label { fill: var(--ink); font-family: var(--mono); font-size: 9px; }
+.fhh-plot-label-focal { fill: var(--ink); font-weight: 700; }
+
+.fhh-table {
+  width: 100%; border-collapse: collapse;
+  font-family: var(--mono); font-size: 11px;
+  background: var(--panel-2);
+  border: 1px solid var(--rule); border-radius: 4px;
+}
+.fhh-table th {
+  text-align: left; padding: 9px 12px; font-weight: 600; color: var(--ink);
+  border-bottom: 1px solid var(--rule); background: var(--panel-3);
+  font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase;
+}
+.fhh-table td {
+  padding: 8px 12px; vertical-align: top;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink); line-height: 1.45;
+}
+.fhh-table tbody tr:last-child td { border-bottom: none; }
+.fhh-table tbody tr:hover td { background: var(--panel-3); }
+.fhh-table .fhh-cohort {
+  font-weight: 600; color: var(--ink); white-space: nowrap;
+}
+.fhh-table .fhh-focal-marker {
+  background: var(--accent); color: var(--bg); padding: 0 5px; border-radius: 2px;
+  font-size: 9px; margin-right: 5px; letter-spacing: 0.04em;
+}
+.fhh-table .fhh-num {
+  color: var(--ink); font-variant-numeric: tabular-nums; font-size: 10.5px;
+}
+.fhh-table .fhh-citation {
+  color: var(--ink-dimmer); font-size: 9.5px; font-style: italic;
+}
+.fhh-empty {
+  padding: 22px; text-align: center; color: var(--ink-dimmer);
+  font-family: var(--mono); font-size: 11px; font-style: italic;
+  border: 1px dashed var(--rule); border-radius: 4px;
+}
+
+/* ── Caution banner (page9 informational notice) ────────────────────── */
+
+.caution-banner {
+  display: flex; gap: 12px; align-items: flex-start;
+  background: rgba(245, 165, 36, 0.08);
+  border: 1px solid rgba(245, 165, 36, 0.5);
+  border-left: 4px solid var(--accent);
+  border-radius: 4px;
+  padding: 12px 14px;
+  margin: 0 0 16px 0;
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--ink);
+}
+.caution-banner-icon {
+  font-size: 18px; line-height: 1.2;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.caution-banner-body { flex: 1; min-width: 0; }
+.caution-banner-title {
+  font-weight: 600; color: var(--accent);
+  font-family: var(--mono); font-size: 11px;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  margin-bottom: 5px;
+}
+html[data-theme="light"] .caution-banner {
+  background: rgba(245, 165, 36, 0.10);
+}
+
+/* ── Per-fragment utilities (formerly inline styles on the carved-out
+ *    HTML fragments) ────────────────────────────────────────────────── */
+
+/* page1 — ASCII mock-up of the samples table. */
+.pop-ascii-block {
+  background: var(--panel); border: 1px solid var(--rule);
+  border-radius: 3px; padding: 10px;
+  font-family: var(--mono); font-size: 10px; color: var(--ink-dim);
+  overflow-x: auto;
+}
+.pop-ascii-block pre { margin: 0; line-height: 1.5; }
+.pop-ascii-foot {
+  font-size: 10px; color: var(--ink-dim); margin-top: 8px; line-height: 1.55;
+}
+
+/* Lists with the legacy "indented + relaxed line-height" treatment. */
+.pop-list { margin: 0 0 0 18px; padding: 0; line-height: 1.7; }
+
+/* Planning-grid templates that used to ride on inline style attributes. */
+.pop-pg-qc-thresholds { grid-template-columns: 1.4fr 1fr 1fr 1.4fr; }
+.pop-pg-scales        { grid-template-columns: 1.2fr 1fr 1.4fr 1.4fr; }
+.pop-pg-rohbins       { grid-template-columns: 1fr 1fr 1.6fr; }
+.pop-pg-bpsources     { grid-template-columns: 1.0fr 0.8fr 1.7fr 0.6fr; }
+.pop-pg-quadrants     { grid-template-columns: 0.6fr 0.6fr 1.4fr 0.6fr; }
+.pop-pg-fouratlases   { grid-template-columns: 0.4fr 1.5fr 1.5fr 1fr; }
+.pop-pg-datasources   { grid-template-columns: 1.4fr 1.6fr 2fr; }
+.pop-pg-phasing       { grid-template-columns: 0.5fr 1.4fr 1.6fr 1fr; }
+.pop-pg-glossary      { grid-template-columns: 1.4fr 3fr; }
+
+/* page2 / page3 — two-column "planned panels" grid. */
+.pop-panels-2col {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+}
+
+/* page7 — accent-colored anchor links and status colour utilities. */
+.pop-link-accent { color: var(--accent); }
+.pop-link-accent2 { color: var(--accent-2); }
+.pop-good { color: var(--good); }
+.pop-dim  { color: var(--ink-dim); }
+.pop-xref { line-height: 1.7; color: var(--ink-dim); }
+
+/* page8 / page9 — code-block + hidden-file-input + spaced toolbar. */
+.pop-code-block {
+  background: var(--panel-3); padding: 10px 12px; border-radius: 3px;
+  font-size: 10px; line-height: 1.55; color: var(--ink); overflow-x: auto;
+}
+.pop-file-hidden { display: none; }
+.pop-bp-toolbar-spaced { margin-top: 12px; }
+
+/* page9 — title sub-label and SVG plot slot margin. */
+.pop-title-sub {
+  color: var(--ink-dimmer); font-size: 13px; font-weight: normal; margin-left: 8px;
+}
+.pop-fhh-plot-slot { margin: 14px 0; }

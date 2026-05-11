@@ -1,0 +1,82 @@
+{
+  "$schema": "../../../../core/registry_core.schema.json",
+  "_doc": "Per-page data and slot requirements for the Population Atlas. Round 1 ships the nine scaffold pages carved out of legacy/Population_atlas.html. Pages 1-6 are scaffold cards with no layer requirements; pages 7 (about) and 4-6 (heterozygosity/diversity/inbreeding) are pure cross-references pointing to the Diversity Atlas. Pages 8 (breeding) and 9 (hatchery health) carry real interactive logic and expect JSON layers when wired (round 2+). Registry content (requires_layers / requires_slots / preloads) is OUT-OF-SCOPE for migrations — see HANDOFF round 5 step 17 of the Inversion Atlas. Round 1 only adds _label + _doc.",
+  "_round1_status": "skeleton — nine pages declared, all requires_* arrays empty. The breeding (page8) and hatchery-health (page9) JS lifted verbatim from the scaffold reads window.state.* slots that don't yet have a registered upstream producer; expect to fill requires_layers + producer registrations in round 2.",
+  "pages": {
+    "page1": {
+      "_label": "samples — orientation table",
+      "_doc": "226-row sample table with sample_id, family, broodline, mean_coverage, callable_fraction, genome_het, F_ROH, ancestry_Q_top, natora_status, qc_pass. Round 1 is the scaffold card with planned-fields table + ASCII mockup; round 2 wires the sortable JSON-driven table from MODULE_2B + pedigree manifest.",
+      "requires_layers": [],
+      "requires_operations": [],
+      "requires_slots": [],
+      "preloads": []
+    },
+    "page2": {
+      "_label": "QC — per-sample quality control",
+      "_doc": "Per-sample mean coverage, callable fraction, missingness, contamination (VerifyBamID2 FREEMIX/CHIPMIX), kinship-pruning status. Round 1 is the scaffold card with QC thresholds + planned-panels grid; round 2 wires the histogram + missingness-vs-coverage scatter from MODULE_QC.",
+      "requires_layers": [],
+      "requires_operations": [],
+      "requires_slots": [],
+      "preloads": []
+    },
+    "page3": {
+      "_label": "families & genetic clusters — NGSadmix / NAToRA / kinship / PCAngsd",
+      "_doc": "Two-round structure analysis (all 226 → NAToRA-pruned 81). Round 1 is the scaffold with six planned-panel slots (Q-bar plots, kinship heatmap, NAToRA diagram, PCAngsd PCA, evalAdmix residuals). Round 2 wires the panels to MODULE_2B outputs.",
+      "requires_layers": [],
+      "requires_operations": [],
+      "requires_slots": [],
+      "preloads": []
+    },
+    "page4": {
+      "_label": "heterozygosity — cohort-summary lens (depth in Diversity Atlas)",
+      "_doc": "Cohort-level headline numbers (mean H, median H, ρ(H,F_ROH), KW H × K=8). Pure cross-reference card pointing to the Diversity Atlas's deeper per-sample tables and plots. No interactive renderer in round 1.",
+      "requires_layers": [],
+      "requires_operations": [],
+      "requires_slots": [],
+      "preloads": []
+    },
+    "page5": {
+      "_label": "diversity — cohort-summary lens (depth in Diversity Atlas)",
+      "_doc": "Cohort-level headline numbers (mean / median θπ, per-chrom range, top hotspot) + available-scales documentation. Pure cross-reference card pointing to the Diversity Atlas's per-chromosome and per-window θπ views. No interactive renderer in round 1.",
+      "requires_layers": [],
+      "requires_operations": [],
+      "requires_slots": [],
+      "preloads": []
+    },
+    "page6": {
+      "_label": "inbreeding — cohort-summary lens (depth in Diversity Atlas)",
+      "_doc": "Cohort-level F_ROH headline numbers (mean, median, ngsF-HMM stability, KW F_ROH × K=8 collapse) + ROH bin-schema documentation. Pure cross-reference card pointing to the Diversity Atlas's F_ROH atlas and ROH composition. No interactive renderer in round 1.",
+      "requires_layers": [],
+      "requires_operations": [],
+      "requires_slots": [],
+      "preloads": []
+    },
+    "page7": {
+      "_label": "about — help / glossary / cross-references",
+      "_doc": "Static help page. What this atlas is, four-atlas family table (ADR-14), why pages 4/5/6 are summary-only, data-sources grid, phasing roadmap, glossary, cross-references to the other three sibling atlases. Pure declarative HTML; no JS-driven rendering. Equivalent to the Inversion Atlas's page5.",
+      "requires_layers": [],
+      "requires_operations": [],
+      "requires_slots": [],
+      "preloads": [],
+      "_static": true
+    },
+    "page8": {
+      "_label": "breeding — sample highlights for breeding committee review",
+      "_doc": "Sample-highlights table with traffic-light status (green useful / yellow review / red caution) and five source categories (Diversity / Relatedness / Burden / Inversions / Markers). Round 1 lifts the scaffold's auto-derivation hooks + JSON/TSV upload + CSV export VERBATIM as page8.js. Auto-derivation reads window.state.perSampleStats / familyClusters / inversionCarriers / markerControls (none yet produced by registry-registered layers). Round 2+ replaces window.state.* reads with proper registry layer subscriptions.",
+      "requires_layers": [],
+      "requires_operations": [],
+      "requires_slots": [],
+      "preloads": [],
+      "_consumes_window_state": ["perSampleStats", "familyClusters", "inversionCarriers", "markerControls", "_hatcheryHealth"]
+    },
+    "page9": {
+      "_label": "hatchery health — F_ROH × H plane (diversity-contextualised F_ROH)",
+      "_doc": "Stock-level verdict combining autozygosity (F_ROH) and species-baseline-referenced heterozygosity (H/H_ref). Four-quadrant verdict (Healthy / Recent inbreeding / Diversity erosion / Caution). Inline SVG scatter + comparator table + JSON/TSV upload + CSV export. Round 1 lifts the scaffold's _fhh* helpers VERBATIM as page9.js. The focal cohort's verdict is also surfaced as an auto-row on page8 via the _bpAutoHatcheryHealthRow hand-off. Novel framework introduced in manuscript Discussion; the page is its operational form.",
+      "requires_layers": [],
+      "requires_operations": [],
+      "requires_slots": [],
+      "preloads": [],
+      "_consumes_window_state": ["_hatcheryHealth"]
+    }
+  }
+}

@@ -1,0 +1,97 @@
+<div id="page6" class="page">
+  <div class="page-content">
+    <div class="page-title">Inbreeding</div>
+    <div class="page-subtitle">
+      Cohort-level summary · F_ROH atlas, ROH composition, per-sample drill-down in the <b>Diversity Atlas</b>
+    </div>
+
+    <div class="da-callout">
+      <div class="da-callout-text">
+        <b>The full F_ROH analysis lives in the Diversity Atlas.</b> The
+        per-sample F_ROH table, per-chromosome F_ROH heatmap (S8b), ROH
+        length-class composition (S8), per-K=8 cluster F_ROH boxes,
+        ngsF-HMM convergence stability per chromosome (SZ), and the
+        all226 → pruned81 ancestry-collapse story (S5) are all in the
+        Diversity Atlas — that's the deliverable for population-genetics
+        reviewers.
+      </div>
+      <a class="da-callout-btn" href="Diversity_atlas.html#page5">
+        Open <b>Diversity Atlas → ROH</b> →
+      </a>
+    </div>
+
+    <div class="card card-stripe-roh">
+      <div class="card-header">
+        <div class="card-title">Cohort-level headline numbers (S1 / S2 / S5)</div>
+        <div class="card-status">summary</div>
+      </div>
+      <div>
+        Genomic inbreeding coefficient F_ROH (≥ 1 Mb threshold) for the
+        226-broodstock cohort, ngsF-HMM with 20 random-seed replicates
+        per chromosome.
+      </div>
+      <div class="summary-grid">
+        <div class="summary-cell">
+          <div class="lbl">mean F_ROH</div>
+          <div class="val">0.277</div>
+          <div class="sub">SD 0.053</div>
+        </div>
+        <div class="summary-cell">
+          <div class="lbl">median F_ROH</div>
+          <div class="val">0.278</div>
+          <div class="sub">range 0.018–0.407</div>
+        </div>
+        <div class="summary-cell">
+          <div class="lbl">ngsF-HMM stable</div>
+          <div class="val">26 / 28</div>
+          <div class="sub">"very_stable" across 20 seeds</div>
+        </div>
+        <div class="summary-cell">
+          <div class="lbl">KW F_ROH × K=8</div>
+          <div class="val">2.9 × 10⁻⁴ → 0.59</div>
+          <div class="sub">all226 → pruned81 collapse</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-stripe-roh">
+      <div class="card-header">
+        <div class="card-title">ROH bin schema</div>
+        <div class="card-status">dual-bin design from MODULE_3 · SD4</div>
+      </div>
+      <div style="margin-bottom: 8px; color: var(--ink-dim);">
+        MODULE_3 uses two bin schemes: fixed literature bins (for
+        cross-study comparability; manuscript-headline) and data-adaptive
+        empirical-quantile bins (for cohort-specific resolution). The
+        Diversity Atlas surfaces the fixed-bin decomposition (S8) directly.
+      </div>
+      <div class="pg pop-pg-rohbins">
+        <div class="pg-header">scheme</div>
+        <div class="pg-header">bins (Mb)</div>
+        <div class="pg-header">use</div>
+
+        <div><code>fixed</code></div>
+        <div>1–2, 2–4, 4–8, 8–16, &gt;16</div>
+        <div>Cross-study comparability; manuscript headline; Diversity Atlas tab 5</div>
+
+        <div><code>adaptive</code></div>
+        <div>cohort-specific quantiles</div>
+        <div>Reveals cohort-specific clustering (e.g. ROH from a recent broodline founder event)</div>
+      </div>
+    </div>
+
+    <div class="card card-stripe-roh">
+      <div class="card-header">
+        <div class="card-title">What's in the Diversity Atlas for this topic</div>
+        <div class="card-status">depth pointer</div>
+      </div>
+      <ul class="pop-list">
+        <li><b>Tab 1 — Samples</b>: 226-row sortable table including F_ROH, F_HOM, ROH count, longest tract, mean tract length, θ in / out ROH per sample</li>
+        <li><b>Tab 2 — Chromosomes</b>: per-chromosome F_ROH (S4) and the per-chromosome KW × K=8 ancestry test (S6)</li>
+        <li><b>Tab 4 — Ancestry</b>: K=8 cluster F_ROH box plot with strip-plot overlay; the all226 → pruned81 collapse and the 5 BH-adjusted pairwise contrasts (all involving K5)</li>
+        <li><b>Tab 5 — ROH composition</b>: ROH length spectrum, per-sample stacked F_ROH composition (with toggle for top60+bot60 / all-226 / top-100), and the 226 × 28 chr × sample F_ROH heatmap</li>
+        <li><b>Tab 6 — Pruning &amp; QC</b>: NAToRA pruning status (S11), ngsF-HMM stability (SZ), Spearman correlation matrix (S3), and the Retained vs Removed F_ROH box plot showing identical medians (0.278)</li>
+      </ul>
+    </div>
+  </div>
+</div>

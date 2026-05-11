@@ -1,0 +1,257 @@
+<div id="page7" class="page">
+  <div class="page-content">
+    <div class="page-title">About this Atlas</div>
+    <div class="page-subtitle">
+      What it is · how it relates to the Inversions Atlas · where the data comes from · glossary
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">What this is</div>
+        <div class="card-status ready">v1 · structure committed</div>
+      </div>
+      <div style="margin-bottom: 8px;">
+        The Population Atlas is a sibling deliverable to the
+        <a href="Inversion_atlas.html" class="pop-link-accent">Local PCA Scrubber (Inversions Atlas)</a>.
+        Same dataset (226-sample <i>C. gariepinus</i> hatchery cohort), same
+        design language, different focus.
+      </div>
+      <div style="color: var(--ink-dim);">
+        The scrubber is an exploratory tool — you scrub windows, lock colors,
+        promote candidates, test recluster modes against contingency. Active
+        analysis. This atlas is a <b>summary view</b> — you don't explore,
+        you read. Where the cohort comes from, what it looks like, what its
+        diversity / inbreeding patterns are. The two together cover the
+        population-genetic side of the thesis.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Four-atlas family — the manuscript design (ADR-14)</div>
+        <div class="card-status">design intent</div>
+      </div>
+      <div style="margin-bottom: 8px;">
+        Four sibling HTML deliverables, one per audience. Each is one
+        focused view of the full results. Together they cover the
+        manuscript.
+      </div>
+      <div class="pg pop-pg-fouratlases">
+        <div class="pg-header">atlas</div>
+        <div class="pg-header">file</div>
+        <div class="pg-header">scope</div>
+        <div class="pg-header">status</div>
+
+        <div>1/4</div>
+        <div><code>Inversion_atlas.html</code></div>
+        <div>Phase-2 inversion discovery and per-candidate refinement</div>
+        <div class="pop-good">✓ shipped (v4)</div>
+
+        <div>2/4</div>
+        <div><code>Population_atlas.html</code></div>
+        <div>Cohort-summary view (this file): Samples / QC / Families / cohort-level Het / Div / Inbreeding pointers</div>
+        <div class="pop-good">✓ scaffold + summaries (v1)</div>
+
+        <div>3/4</div>
+        <div><code>Diversity_atlas.html</code></div>
+        <div>Deep diversity / ROH / θπ / ancestry analysis · all 19 supp tables · 22 plots</div>
+        <div class="pop-good">✓ shipped (v2)</div>
+
+        <div>4/4</div>
+        <div><code>Genome_atlas.html</code></div>
+        <div>Chromosome-scale assembly stats, synteny, gene tracks, repeats / TE landscape</div>
+        <div class="pop-dim">⚪ planned</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Why pages 4 / 5 / 6 are summary-only</div>
+        <div class="card-status">scope decision</div>
+      </div>
+      <div style="margin-bottom: 8px;">
+        Pages 4 (Heterozygosity), 5 (Diversity), 6 (Inbreeding) used to be
+        scaffolds promising deep deliverables. The <b>Diversity Atlas</b>
+        now ships those deliverables in production:
+      </div>
+      <ul class="pop-list">
+        <li>All 19 MODULE_3 supplementary tables loaded as JSON-backed sortable interactive views</li>
+        <li>22 SVG plots: distributions, scatters, per-chromosome bars, hotspot heatmaps, cluster boxes with strip-plot overlays, K-sweep trajectories, the genome-wide θπ landscape, the per-sample × hotspot heatmap, the ROH composition stacked plot, the chr × sample F_ROH heatmap, plus QC plots and pruning comparisons</li>
+        <li>Drill-down per sample with cohort percentiles + automatic flag notes</li>
+      </ul>
+      <div style="margin-top: 10px; color: var(--ink-dim);">
+        Two atlases, two depths, one source of truth (MODULE_3 supp
+        tables). The Population Atlas keeps its three pages as cohort-QC
+        landing cards for breeding-program collaborators who want the
+        topline numbers without diving deep — clicking the green callout
+        takes them straight to the Diversity Atlas's matching tab.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Data sources</div>
+        <div class="card-status ready">documented</div>
+      </div>
+      <div class="pg pop-pg-datasources">
+        <div class="pg-header">page</div>
+        <div class="pg-header">module</div>
+        <div class="pg-header">primary file</div>
+
+        <div>Samples</div>
+        <div>MODULE_2B + pedigree</div>
+        <div><code>01_inputs_check/samples_qcpass.txt</code> + manifest</div>
+
+        <div>QC</div>
+        <div>MODULE_QC</div>
+        <div><code>01_inputs_check/inputs_summary.txt</code> · mosdepth · VerifyBamID2</div>
+
+        <div>Families &amp; clusters</div>
+        <div>MODULE_2B</div>
+        <div>NGSadmix Q files · ngsRelate · NAToRA · PCAngsd · evalAdmix</div>
+
+        <div>Heterozygosity</div>
+        <div>MODULE_3 ANGSD pestPG</div>
+        <div><code>02_heterozygosity/04_summary/genomewide_heterozygosity.tsv</code></div>
+
+        <div>Diversity</div>
+        <div>MODULE_3 multiscale θπ</div>
+        <div><code>02_heterozygosity/03_theta/multiscale/*.pestPG</code></div>
+
+        <div>Inbreeding</div>
+        <div>MODULE_3 ngsF-HMM</div>
+        <div>per-sample F_ROH + ROH segment table</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Phasing roadmap</div>
+        <div class="card-status planned">multi-turn</div>
+      </div>
+      <div class="pg pop-pg-phasing">
+        <div class="pg-header">phase</div>
+        <div class="pg-header">scope</div>
+        <div class="pg-header">deliverable</div>
+        <div class="pg-header">status</div>
+
+        <div>A</div>
+        <div>scaffold + page structure</div>
+        <div>This file (v1) — chrome, tabs, planning grids per page</div>
+        <div class="pop-good">✓ shipped (this turn)</div>
+
+        <div>B</div>
+        <div>Samples page — wire to real data</div>
+        <div>JSON loader + sortable table; uses MODULE_2B + pedigree manifest</div>
+        <div class="pop-dim">⚪ next</div>
+
+        <div>B</div>
+        <div>QC page — wire to real data</div>
+        <div>Coverage histogram + missingness scatter from MODULE_QC summary</div>
+        <div class="pop-dim">⚪ next</div>
+
+        <div>C</div>
+        <div>Families &amp; clusters page</div>
+        <div>NGSadmix Q-bar plots + kinship heatmap from MODULE_2B</div>
+        <div class="pop-dim">⚪ multi-turn</div>
+
+        <div>C</div>
+        <div>Heterozygosity / Diversity / Inbreeding</div>
+        <div>One page per turn; tracks + heatmaps from MODULE_3</div>
+        <div class="pop-dim">⚪ multi-turn</div>
+
+        <div>D</div>
+        <div>Cross-links with Inversions Atlas</div>
+        <div>Click candidate in scrubber → jump to corresponding chromosome here, with diversity track aligned</div>
+        <div class="pop-dim">⚪ later</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Glossary</div>
+        <div class="card-status ready">documented</div>
+      </div>
+      <div class="pg pop-pg-glossary">
+        <div class="pg-header">term</div>
+        <div class="pg-header">definition</div>
+
+        <div><code>broodline</code></div>
+        <div>Hatchery breeding line (parent stock identity); typically 3-5 broodlines per cohort. Each broodline contributes a distinct genetic background.</div>
+
+        <div><code>family</code></div>
+        <div>Single full-sibling group from one cross. A broodline contains multiple families.</div>
+
+        <div><code>F_ROH</code></div>
+        <div>Inbreeding coefficient estimated from runs of homozygosity. F_ROH = (sum of ROH lengths) / (callable genome length).</div>
+
+        <div><code>ROH</code></div>
+        <div>Run of homozygosity — a contiguous stretch of homozygous genotypes. Long ROH (&gt;5 Mb) indicates recent inbreeding; short ROH (&lt;1 Mb) indicates ancient.</div>
+
+        <div><code>θπ</code></div>
+        <div>Pairwise nucleotide diversity per site (Tajima's π). The pestPG <code>tP</code> column. The diversity proxy used throughout this atlas.</div>
+
+        <div><code>H_obs</code></div>
+        <div>Observed heterozygosity — fraction of genotypes that are heterozygous. Distinct from θπ but related; H_obs is a per-genotype count, θπ is a per-site expected pairwise difference.</div>
+
+        <div><code>NAToRA</code></div>
+        <div>Hungarian-algorithm kinship-pruning tool. Removes minimum samples needed so that no remaining pair has π̂ above a threshold (here 3rd-degree, π̂ ≥ 0.0884).</div>
+
+        <div><code>NGSadmix</code></div>
+        <div>Ancestry-decomposition tool that estimates per-sample Q (admixture proportions) at user-specified K from genotype likelihoods.</div>
+
+        <div><code>folded SFS</code></div>
+        <div>Site-frequency spectrum where minor and major alleles are not distinguished (no outgroup polarization). Required when no clean ancestral state is available.</div>
+
+        <div><code>callable genome</code></div>
+        <div>Genome regions where joint variant calling is statistically reliable (post-mask: low complexity, mappability, coverage thresholds).</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Cross-references</div>
+        <div class="card-status ready">documented</div>
+      </div>
+      <div class="pop-xref">
+        • <b>Inversions Atlas</b> → <a href="Inversion_atlas.html" class="pop-link-accent">Inversion_atlas.html</a> — sibling deliverable, same dataset, exploratory inversion-calling tool<br>
+        • <b>Inversions Atlas tab 7 (popstats)</b> — atlas-shared track stack including θπ, FST, Hobs/Hexp, ancestry Δ12; same data, different presentation<br>
+        • <b>Inversions Atlas tab 8 (ancestry)</b> — per-window K-cluster Q values; the per-window source for this atlas's chromosome-level summaries<br>
+        • <b>Inversions Atlas tab 2 (local PCA θπ)</b> — exploratory diversity scrubber; pairs with this atlas's <b>page 5 (Diversity)</b> as the chromosome-level summary view<br>
+        • <b>Inversions Atlas tab 12 (cross-species)</b> — Cgar↔Cmac wfmash macro-synteny + breakpoint catalogue<br>
+        • <b>Inversions Atlas tab 13 (stats profile)</b> — comparative inversion-phenotype synthesis table<br>
+        • <b>Inversions Atlas tab 14 (marker panel)</b> — private-indel marker readiness with positive/negative + cross-species controls; linked from the breeding page's Marker rows
+      </div>
+    </div>
+
+    <div class="card card-stripe-breed">
+      <div class="card-header">
+        <div class="card-title">What&rsquo;s new in v1.3</div>
+        <div class="card-status ready">v1.3 · turn 81</div>
+      </div>
+      <div style="margin-bottom: 8px;">
+        One addition since v1.2:
+      </div>
+      <ul class="pop-list">
+        <li><b>Page 7 — Hatchery health</b> (new tab, between Inbreeding and Breeding). Operationalises the manuscript&rsquo;s <b>F_ROH × H plane</b> framework (introduced in the Discussion as <i>diversity-contextualised F_ROH</i>, F_ROH | H). Each cohort sits in 2D (F_ROH, H/H_ref) space; the quadrant determines a colored verdict: <span class="fhh-good">Healthy</span> / <span class="fhh-review">Recent inbreeding only</span> / <span class="fhh-review">Diversity erosion only</span> / <span class="fhh-caution">Caution — historical erosion + recent inbreeding</span>. Inline SVG scatter, comparator panel, JSON/TSV upload. The focal cohort&rsquo;s verdict is surfaced as a Diversity-source row on the breeding page so the committee sees stock-level health alongside per-sample flags. Coloring rule: only the verdict text is colored — cohort names, F_ROH, and H values stay in normal ink. Breeding renumbered 7&nbsp;→&nbsp;8; About renumbered 8&nbsp;→&nbsp;9.</li>
+      </ul>
+      <div style="color: var(--ink-dim); font-size: 10.5px;">
+        See the hatchery health page&rsquo;s in-page documentation for the framework rationale, quadrant verdicts, and JSON schema.
+      </div>
+    </div>
+
+    <div class="card card-stripe-breed">
+      <div class="card-header">
+        <div class="card-title">What&rsquo;s new in v1.2</div>
+        <div class="card-status">v1.2 · turn 79</div>
+      </div>
+      <div style="margin-bottom: 8px;">
+        Two additions in v1.2 (the cross-link hub release):
+      </div>
+      <ul class="pop-list">
+        <li><b>Page 7 — Breeding</b> (new tab, since renumbered to 8 by v1.3). Sample highlights table for breeding committee review. One row = one sample-level reason to inspect or preserve that fish (high inbreeding, family cluster member, rare inversion carrier, marker control, top-1% diversity / burden). Three traffic-light statuses (🟢 useful / 🟡 review / 🔴 caution). Default 4-column simple view with detailed-view toggle. Auto-derives rows from cohort state when JSON layers load; accepts <code>breeding_highlights.json</code>/.tsv overlay.</li>
+        <li><b>Hash routing</b>. <code>Population_atlas.html#page8</code> now lands on the breeding page directly. The Inversion Atlas got the same treatment so cross-atlas deep links work both ways. Bogus hashes fall back gracefully.</li>
+      </ul>
+    </div>
+  </div>
+</div>

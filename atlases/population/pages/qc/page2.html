@@ -1,0 +1,84 @@
+<div id="page2" class="page">
+  <div class="page-content">
+    <div class="page-title">Quality Control</div>
+    <div class="page-subtitle">
+      Per-sample QC metrics · pass/fail flags · cohort-level summary
+    </div>
+
+    <div class="card card-stripe-qc">
+      <div class="card-header">
+        <div class="card-title">What this page shows</div>
+        <div class="card-status planned">scaffold</div>
+      </div>
+      <div style="margin-bottom: 8px;">
+        Per-sample QC dashboard. Three sections:
+      </div>
+      <ol class="pop-list">
+        <li><b>Coverage distribution</b> — histogram of per-sample mean WGS coverage; outliers flagged</li>
+        <li><b>Callable fraction</b> — what fraction of the genome each sample contributes to the joint callable set</li>
+        <li><b>Missingness</b> — per-sample missing-genotype rate at the joint SNP set</li>
+        <li><b>Contamination</b> — VerifyBamID estimates (FREEMIX / CHIPMIX)</li>
+        <li><b>Kinship-pruning status</b> — kept / removed for the 81-sample unrelated subset</li>
+      </ol>
+    </div>
+
+    <div class="card card-stripe-qc">
+      <div class="card-header">
+        <div class="card-title">QC thresholds (cohort defaults)</div>
+        <div class="card-status planned">awaiting MODULE_QC summary</div>
+      </div>
+      <div class="pg pop-pg-qc-thresholds">
+        <div class="pg-header">metric</div>
+        <div class="pg-header">threshold</div>
+        <div class="pg-header">cohort source</div>
+        <div class="pg-header">notes</div>
+
+        <div><code>mean_coverage</code></div>
+        <div>≥ 5×</div>
+        <div>mosdepth</div>
+        <div>Below 5× = excluded from joint calling.</div>
+
+        <div><code>callable_fraction</code></div>
+        <div>≥ 90%</div>
+        <div>callable BED intersect</div>
+        <div>Per-sample callable / cohort callable.</div>
+
+        <div><code>missingness_at_joint</code></div>
+        <div>≤ 10%</div>
+        <div>BEAGLE genotype matrix</div>
+        <div>Below threshold → flagged for review.</div>
+
+        <div><code>contamination_freemix</code></div>
+        <div>≤ 0.03</div>
+        <div>VerifyBamID2</div>
+        <div>FREEMIX above 3% → exclude.</div>
+
+        <div><code>natora_kinship</code></div>
+        <div>π̂ &lt; 0.0884 (3rd-degree)</div>
+        <div>ngsRelate → NAToRA</div>
+        <div>Hungarian-pruning to maximally-unrelated subset.</div>
+      </div>
+    </div>
+
+    <div class="card card-stripe-qc">
+      <div class="card-header">
+        <div class="card-title">Planned panels</div>
+        <div class="card-status planned">phase B work</div>
+      </div>
+      <div class="pop-panels-2col">
+        <div class="panel-slot">
+          <div class="panel-slot-title">Coverage histogram</div>
+          <div class="panel-slot-desc">Cohort distribution of mean WGS coverage; vertical line at threshold.</div>
+          <div class="panel-slot-mockup">░░░ histogram mockup ░░░</div>
+          <div class="panel-slot-foot">feeds: MODULE_QC mosdepth summary</div>
+        </div>
+        <div class="panel-slot">
+          <div class="panel-slot-title">Missingness vs coverage</div>
+          <div class="panel-slot-desc">Per-sample scatter — coverage on x, missingness on y; outliers flagged.</div>
+          <div class="panel-slot-mockup">░░░ scatter mockup ░░░</div>
+          <div class="panel-slot-foot">feeds: BEAGLE GP matrix + mosdepth</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

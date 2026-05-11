@@ -1,0 +1,120 @@
+<div id="page1" class="page">
+  <div class="page-content">
+    <div class="page-title">Samples</div>
+    <div class="page-subtitle">
+      226 samples · <i>Clarias gariepinus</i> · hatchery broodstock cohort · LANTA HPC · ~9× WGS
+    </div>
+
+    <div class="card card-stripe-samples">
+      <div class="card-header">
+        <div class="card-title">What this page shows</div>
+        <div class="card-status planned">scaffold · panel ships when MODULE_2B emits</div>
+      </div>
+      <div style="margin-bottom: 8px;">
+        The <b>orientation page</b>. One row per sample, sortable by any column.
+        This is where any reader starts when picking up the atlas — get
+        oriented to the cohort, then drill into the topical pages
+        (heterozygosity, diversity, inbreeding) as questions arise.
+      </div>
+      <div style="color: var(--ink-dim);">
+        Hover any row → mini-card with summary stats. Click sample ID →
+        per-sample deep-dive sub-view (planned). Filter bar at top by family,
+        broodline, ancestry-Q top class, F_ROH percentile.
+      </div>
+    </div>
+
+    <div class="card card-stripe-samples">
+      <div class="card-header">
+        <div class="card-title">Planned columns</div>
+        <div class="card-status planned">field schema · awaiting MODULE_2B JSON layer</div>
+      </div>
+      <table class="fields">
+        <thead>
+          <tr>
+            <th>field</th>
+            <th>source module</th>
+            <th>description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="field-name"><code>sample_id</code></td>
+            <td class="field-source">samples.ind</td>
+            <td>Canonical sample identifier (CGA-prefixed in this cohort).</td>
+          </tr>
+          <tr>
+            <td class="field-name"><code>family_id</code></td>
+            <td class="field-source">pedigree manifest</td>
+            <td>Family-of-origin from breeding records; matches MODULE_2B family overlay.</td>
+          </tr>
+          <tr>
+            <td class="field-name"><code>broodline</code></td>
+            <td class="field-source">pedigree manifest</td>
+            <td>Hatchery broodline (parent stock identity); typically 3-5 broodlines per cohort.</td>
+          </tr>
+          <tr>
+            <td class="field-name"><code>mean_coverage</code></td>
+            <td class="field-source">MODULE_QC mosdepth</td>
+            <td>Mean WGS coverage across callable genome (target ~9×).</td>
+          </tr>
+          <tr>
+            <td class="field-name"><code>callable_fraction</code></td>
+            <td class="field-source">MODULE_QC callable BED</td>
+            <td>Fraction of genome inside callable regions (post-mask).</td>
+          </tr>
+          <tr>
+            <td class="field-name"><code>genome_het</code></td>
+            <td class="field-source">02_heterozygosity/04_summary</td>
+            <td>Genome-wide heterozygosity (per-sample θ_W or H_obs).</td>
+          </tr>
+          <tr>
+            <td class="field-name"><code>F_ROH</code></td>
+            <td class="field-source">MODULE_3 ngsF-HMM</td>
+            <td>Genome-wide inbreeding from runs of homozygosity (ROH-derived F).</td>
+          </tr>
+          <tr>
+            <td class="field-name"><code>ancestry_Q_top</code></td>
+            <td class="field-source">MODULE_2B NGSadmix</td>
+            <td>Dominant ancestry component at K=3 (or chosen K).</td>
+          </tr>
+          <tr>
+            <td class="field-name"><code>natora_status</code></td>
+            <td class="field-source">MODULE_2B NAToRA</td>
+            <td>Kinship-pruning status (kept / removed). Two structure rounds: all 226 + 81 unrelated.</td>
+          </tr>
+          <tr>
+            <td class="field-name"><code>qc_pass</code></td>
+            <td class="field-source">MODULE_QC summary</td>
+            <td>Boolean — passes coverage / missingness / contamination thresholds.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card card-stripe-samples">
+      <div class="card-header">
+        <div class="card-title">Mock-up — what the table will look like</div>
+        <div class="card-status planned">visual stub</div>
+      </div>
+      <div class="pop-ascii-block">
+<pre>sample_id  family  brood  cov   callable  genome_het  F_ROH  Q_top   natora  qc
+─────────  ──────  ─────  ────  ────────  ──────────  ─────  ──────  ──────  ──
+CGA001     F12     B2     9.1×   97.4%     0.00321    0.041  K1=0.78  kept    ✓
+CGA002     F08     B1     8.7×   96.8%     0.00298    0.052  K2=0.82  kept    ✓
+CGA003     F12     B2     9.4×   97.6%     0.00305    0.038  K1=0.81  kept    ✓
+CGA004     F03     B3     7.2×   91.3%     —          —      —        removed ✗
+CGA005     F08     B1     9.0×   97.1%     0.00310    0.048  K2=0.79  kept    ✓
+CGA006     F15     B3     9.3×   97.3%     0.00289    0.067  K3=0.71  kept    ✓
+…          …       …      …     …          …          …      …        …       …
+                                          (~226 rows)
+</pre>
+      </div>
+      <div class="pop-ascii-foot">
+        Sortable by any column (default: sample_id ASC). Filter pills at top:
+        family · broodline · qc status · F_ROH percentile (≤25% / 25-75% / ≥75%).
+        Click any row → per-sample card with all chromosomes' het + F_ROH +
+        ancestry-Q breakdown.
+      </div>
+    </div>
+  </div>
+</div>

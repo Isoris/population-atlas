@@ -1,0 +1,173 @@
+<div id="page9" class="page">
+  <div class="page-content">
+    <div class="page-title">Hatchery health <span class="pop-title-sub">F_ROH × H plane &middot; diversity-contextualised inbreeding</span></div>
+    <div class="page-subtitle">
+      Stock-level verdict combining autozygosity (F_ROH) and species-baseline-referenced heterozygosity (H / H<sub>ref</sub>) &middot; the quadrant determines the verdict
+    </div>
+
+    <!-- Caution banner: F_ROH | H is a NEW framework introduced in this
+         manuscript. There is no published baseline cohort to compare it
+         against. The banner makes that explicit so users don't read the
+         verdicts as field-validated standards. -->
+    <div class="caution-banner" role="note" aria-label="New feature notice">
+      <div class="caution-banner-icon" aria-hidden="true">&#9888;</div>
+      <div class="caution-banner-body">
+        <div class="caution-banner-title">New feature &middot; no comparator baseline yet</div>
+        <div>
+          <b>F_ROH | H</b> (diversity-contextualised F_ROH) is a <b>novel framework</b>
+          introduced in this manuscript. It has <b>no published comparator dataset</b> against
+          which a cohort's quadrant verdict can be externally validated. The four verdict
+          labels (Healthy / Recent inbreeding only / Diversity erosion only / Caution)
+          are interpretive aids derived from the F_ROH and H values alone, not
+          field-validated thresholds. Quadrant cuts are computed from the median of
+          loaded cohorts, so adding or removing comparators changes them. Use the verdicts
+          as a structured way to think about your stock&mdash;not as a regulatory or
+          conservation-grade classification.
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-stripe-roh">
+      <div class="card-header">
+        <div class="card-title">Why both numbers, not just F_ROH?</div>
+        <div class="card-status">framework</div>
+      </div>
+      <div style="margin-bottom: 8px;">
+        F_ROH alone is ambiguous across studies. A cohort with F_ROH = 0.30 on a
+        diversity-replete background reflects <b>recent close-kin inbreeding only</b>
+        and is manageable by outcrossing. The same F_ROH = 0.30 layered on top of
+        already-eroded heterozygosity reflects <b>sustained demographic decline</b>
+        — outcrossing within the stock cannot recover the missing diversity because
+        the non-ROH genome itself is depleted.
+      </div>
+      <div style="color: var(--ink-dim);">
+        Reporting F_ROH and H jointly resolves this ambiguity. Every stock becomes
+        a point in 2D space; the position tells you which biological process is
+        driving the inbreeding signal and which management response is appropriate.
+        The four quadrants of the plane and their verdicts are shown below.
+      </div>
+    </div>
+
+    <div class="bp-source-cards" id="fhhSummaryCards">
+      <!-- Auto-populated by _fhhRender(): 4 quadrant counts + n_cohorts loaded. -->
+    </div>
+
+    <div class="card card-stripe-roh">
+      <div class="card-header">
+        <div class="card-title">Quadrants of the F_ROH × H plane</div>
+        <div class="card-status">verdict map</div>
+      </div>
+      <div class="pg pop-pg-quadrants">
+        <div class="pg-header">F_ROH</div>
+        <div class="pg-header">H / H<sub>ref</sub></div>
+        <div class="pg-header">verdict (colored text)</div>
+        <div class="pg-header">interpretation</div>
+
+        <div>low</div><div>high</div>
+        <div><span class="fhh-good">Healthy &mdash; outbred on diversity-replete background</span></div>
+        <div>baseline state; preserve</div>
+
+        <div>high</div><div>high</div>
+        <div><span class="fhh-review">Recent inbreeding only &mdash; outcrossable</span></div>
+        <div>recent close-kin events; manageable by pair selection</div>
+
+        <div>low</div><div>low</div>
+        <div><span class="fhh-review">Diversity erosion only &mdash; bottlenecked but not inbred</span></div>
+        <div>old founder bottleneck; current pairings ok but limited gene pool</div>
+
+        <div>high</div><div>low</div>
+        <div><span class="fhh-caution">Caution &mdash; historical erosion + recent inbreeding</span></div>
+        <div>worst case; outcrossing within stock cannot recover diversity</div>
+      </div>
+    </div>
+
+    <div class="card card-stripe-roh">
+      <div class="card-header">
+        <div class="card-title">F_ROH × H plane</div>
+        <div class="card-status" id="fhhStatusBadge">scaffold &middot; load <code>hatchery_health.json</code> to plot</div>
+      </div>
+      <div id="fhhPlotSlot" class="pop-fhh-plot-slot">
+        <!-- Auto-populated SVG scatter or empty-state message. -->
+      </div>
+      <div style="color: var(--ink-dim); font-size: 10.5px;">
+        Each point is one cohort. Vertical axis: H per site. Horizontal axis: F_ROH (genomic
+        fraction in ROH ≥ 1 Mb). The dashed lines mark the median across loaded cohorts &mdash;
+        they define the four quadrants. The cohort name is plain ink; the colored verdict
+        beside it is the quadrant assignment.
+      </div>
+    </div>
+
+    <div class="card card-stripe-roh">
+      <div class="card-header">
+        <div class="card-title">Loaded cohorts</div>
+        <div class="card-status" id="fhhTableBadge">populated when JSON loads</div>
+      </div>
+      <div id="fhhTableSlot">
+        <!-- Auto-populated table or empty-state message. -->
+      </div>
+      <div class="bp-toolbar pop-bp-toolbar-spaced">
+        <div class="bp-tb-spacer"></div>
+        <button class="bp-tb-btn" id="fhhLoadBtn" title="Upload a hatchery_health.json or .tsv with cohort entries (cohort, species, F_ROH, H_per_site, optional H_ref).">load hatchery_health&hellip;</button>
+        <input type="file" id="fhhLoadInput" class="pop-file-hidden" accept=".json,.tsv,.txt">
+        <button class="bp-tb-btn" id="fhhExportCsvBtn" title="Download the loaded cohort table as CSV.">export CSV</button>
+        <button class="bp-tb-btn" id="fhhResetBtn" title="Drop all loaded cohorts.">reset</button>
+      </div>
+    </div>
+
+    <div class="card card-stripe-roh">
+      <div class="card-header">
+        <div class="card-title">Upload format &mdash; <code>hatchery_health.json</code></div>
+        <div class="card-status">cohort schema</div>
+      </div>
+      <div style="margin-bottom: 8px; color: var(--ink-dim);">
+        One row per cohort. <code>F_ROH</code> is the genomic fraction in ROH (long-tract
+        cutoff, typically &ge;1 Mb). <code>H_per_site</code> is mean per-site heterozygosity
+        (folded SFS, ANGSD or equivalent). <code>H_ref</code> is the species-baseline reference
+        H (a single number per species; if omitted, the page falls back to the cohort with
+        the highest H as the reference).
+      </div>
+      <pre class="pop-code-block">{
+  "metadata": { "panel_name": "F_ROH × H plane", "date": "..." },
+  "cohorts": [
+    { "cohort": "this study (226 broodstock)",
+      "species": "C. gariepinus",
+      "is_focal": true,
+      "F_ROH": 0.277,
+      "H_per_site": 0.00455,
+      "H_ref": 0.0156,
+      "ref_url": "Diversity_atlas.html#page1",
+      "notes": "Thai hatchery, 9x WGS, ngsF-HMM ≥1 Mb" },
+    { "cohort": "Nigerian wild C. gariepinus",
+      "species": "C. gariepinus",
+      "F_ROH": 0.05,
+      "H_per_site": 0.0156,
+      "H_ref": 0.0156,
+      "citation": "Sanda 2026" }
+  ]
+}</pre>
+      <div style="color: var(--ink-dim); font-size: 10.5px;">
+        TSV variant: header <code>cohort &middot; species &middot; F_ROH &middot; H_per_site &middot; H_ref</code> (optional <code>citation</code>, <code>notes</code>, <code>is_focal</code>).
+      </div>
+    </div>
+
+    <div class="card card-stripe-roh">
+      <div class="card-header">
+        <div class="card-title">Methods note</div>
+        <div class="card-status">manuscript-ready</div>
+      </div>
+      <div style="color: var(--ink-dim); font-size: 10.5px; line-height: 1.55;">
+        We propose that interpretation of F_ROH in managed populations requires explicit
+        reference to baseline heterozygosity, a framing we term <b>diversity-contextualised F_ROH</b>
+        (F_ROH | H). Under this framing, an F_ROH value is reported together with the cohort's
+        per-site H expressed as a fraction of a reference or wild-population estimate; populations
+        with identical F_ROH but different H | H_ref ratios reflect distinct underlying processes
+        rather than equivalent inbreeding states. The four quadrants of the plane (low/high F_ROH
+        × low/high H | H_ref) provide a stock-level health verdict that distinguishes recent
+        pedigree events (high F_ROH at preserved H) from sustained demographic erosion
+        (high F_ROH at depleted H). The hatchery-health verdict is exported to the
+        <a href="#/population/page8" class="pop-link-accent2">Breeding page</a> as a Diversity-source
+        row so the breeding committee can see stock-level context alongside per-sample flags.
+      </div>
+    </div>
+  </div>
+</div>

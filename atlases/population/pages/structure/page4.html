@@ -1,0 +1,81 @@
+<div id="page4" class="page">
+  <div class="page-content">
+    <div class="page-title">Heterozygosity</div>
+    <div class="page-subtitle">
+      Cohort-level summary · deep per-sample tables and plots in the <b>Diversity Atlas</b>
+    </div>
+
+    <div class="da-callout">
+      <div class="da-callout-text">
+        <b>This page is a cohort-summary lens.</b> Per-sample H, sortable
+        tables, distribution plots, K=8 cluster boxes, H × F_ROH scatter,
+        and per-chromosome H heatmaps live in the deep <b>Diversity Atlas</b>
+        — the dedicated population-genetics-reviewer-facing tool that
+        consumes the same MODULE_3 outputs.
+      </div>
+      <a class="da-callout-btn" href="Diversity_atlas.html#page1">
+        Open <b>Diversity Atlas → Samples</b> →
+      </a>
+    </div>
+
+    <div class="card card-stripe-het">
+      <div class="card-header">
+        <div class="card-title">Cohort-level headline numbers (S1 / S2)</div>
+        <div class="card-status">summary</div>
+      </div>
+      <div>
+        Genome-wide per-individual heterozygosity for the 226-broodstock
+        hatchery cohort, ANGSD folded SFS over the 576.9 Mb callable mask.
+        No outgroup polarisation (hatchery cohorts have no clean ancestral
+        state).
+      </div>
+      <div class="summary-grid">
+        <div class="summary-cell">
+          <div class="lbl">mean H</div>
+          <div class="val">4.55 × 10⁻³</div>
+          <div class="sub">SD 3.28 × 10⁻⁴</div>
+        </div>
+        <div class="summary-cell">
+          <div class="lbl">median H</div>
+          <div class="val">4.53 × 10⁻³</div>
+          <div class="sub">range 2.83–7.08 × 10⁻³</div>
+        </div>
+        <div class="summary-cell">
+          <div class="lbl">ρ(H, F_ROH)</div>
+          <div class="val">−0.704</div>
+          <div class="sub">P = 3.4 × 10⁻³⁵</div>
+        </div>
+        <div class="summary-cell">
+          <div class="lbl">KW H × K=8 (all226)</div>
+          <div class="val">P = 0.150</div>
+          <div class="sub">no ancestry differentiation</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-stripe-het">
+      <div class="card-header">
+        <div class="card-title">What's in the Diversity Atlas for this topic</div>
+        <div class="card-status">depth pointer</div>
+      </div>
+      <ul class="pop-list">
+        <li><b>Tab 1 — Samples</b>: 226-row sortable per-sample table with H, F_ROH, ROH bins, ancestry K=8, pruned81 status; click-to-detail card with cohort percentiles and outlier flagging</li>
+        <li><b>Tab 1 — H histogram</b> with mean/median reference lines</li>
+        <li><b>Tab 1 — H × F_ROH scatter</b>, dots coloured by K=8 (the −0.704 correlation visualised)</li>
+        <li><b>Tab 4 — H per K=8 cluster</b> box plot with strip-plot overlay of all 226 samples</li>
+      </ul>
+    </div>
+
+    <div class="card card-stripe-het">
+      <div class="card-header">
+        <div class="card-title">Caveats (preserved here for cohort-level context)</div>
+        <div class="card-status">documented for the manuscript</div>
+      </div>
+      <ul class="pop-list">
+        <li><b>Folded SFS</b> — hatchery population doesn't follow HWE and no outgroup is available for ancestral polarization</li>
+        <li><b>H is a diversity estimator, not literal H_obs</b> — derived from the per-sample SFS, equivalent to θπ under the infinite-sites model; literal H_obs would require explicit per-genotype counting</li>
+        <li><b>Family confounding</b> — siblings with elevated shared inheritance can inflate per-region H apparently; pruned81 panel cuts through this</li>
+      </ul>
+    </div>
+  </div>
+</div>

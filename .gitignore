@@ -1,0 +1,34 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+
+# Editor / IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# Node (in case a future round adds a JS toolchain)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Python (engines / analysis dir may grow into one)
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+
+# Atlas-cache / generated workspace (assembled by atlas-core/build/assemble.sh elsewhere)
+atlas-workspace/
+.atlas.env
+
+# Test scratch
+tests/.scratch/

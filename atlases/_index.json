@@ -1,0 +1,11 @@
+{
+  "_doc": "Index of atlas folders inside this population-atlas source tree. Single atlas: 'population'. The assembly script (atlas-core/build/assemble.sh) merges this with the other atlas repos' atlases/_index.json into a unified workspace/atlases/_index.json. Standalone dev runs (serving this source tree directly) discover the population atlas from this file.",
+  "atlases": [
+    "population"
+  ],
+  "_assembled_from": [
+    "population-atlas"
+  ],
+  "_assembled_at": "2026-05-11T00:00:00Z",
+  "_assembly_version": "v1-draft"
+}

@@ -1,0 +1,98 @@
+{
+  "$schema": "../../../../core/registry_core.schema.json",
+  "_doc": "Layer inventory for the Population Atlas. Round 1 stubs the upstream layers that the scaffold's auto-derivation hooks (page8 breeding) and the F_ROH × H plane (page9 hatchery health) implicitly consume via window.state.*. Each entry is CONTRACT-ONLY: the actual files don't exist yet; the analysis pipeline (catfish-population-analysis + catfish-diversity-analysis MODULE_3) emits them in round 2+.",
+  "_tier_legend": {
+    "hot": "RAM-pinned at trigger event; pages read state directly; <1ms",
+    "warm": "IndexedDB-cached at trigger event; first read async ~50ms; subsequent ~10ms",
+    "cold": "Fetched on demand; spinner allowed"
+  },
+  "_round1_status": "All entries below are CONTRACT-ONLY (not-yet-loaded). The scaffold pages render their empty-state messages until the corresponding JSON files land.",
+  "layers": {
+
+    "per_sample_stats": {
+      "tier": "warm",
+      "source": "file",
+      "path": "data/per_sample_stats.json",
+      "_status": "not_loaded",
+      "_feeds": "page1 samples table · page8 breeding (auto-derived Diversity + Burden rows)",
+      "_source_pipeline": "MODULE_2B + MODULE_3 + MODULE_CONSERVATION rollup",
+      "_legacy_window_state": "window.state.perSampleStats"
+    },
+
+    "family_clusters": {
+      "tier": "warm",
+      "source": "file",
+      "path": "data/family_clusters.json",
+      "_status": "not_loaded",
+      "_feeds": "page3 families & clusters · page8 breeding (auto-derived Relatedness rows)",
+      "_source_pipeline": "MODULE_2B ngsRelate → NAToRA → family-tree clustering",
+      "_legacy_window_state": "window.state.familyClusters"
+    },
+
+    "inversion_carriers": {
+      "tier": "cold",
+      "source": "file",
+      "path": "data/inversion_carriers.json",
+      "_status": "not_loaded",
+      "_feeds": "page8 breeding (auto-derived rare-haplotype-carrier rows)",
+      "_source_pipeline": "Inversion Atlas — cross-atlas import from karyotype assignments + marker panel",
+      "_legacy_window_state": "window.state.inversionCarriers"
+    },
+
+    "marker_controls": {
+      "tier": "cold",
+      "source": "file",
+      "path": "data/marker_controls.json",
+      "_status": "not_loaded",
+      "_feeds": "page8 breeding (auto-derived Marker positive/negative control rows)",
+      "_source_pipeline": "Inversion Atlas — cross-atlas import from page18 marker_panel.json controls block",
+      "_legacy_window_state": "window.state.markerControls"
+    },
+
+    "hatchery_health_cohorts": {
+      "tier": "warm",
+      "source": "file",
+      "path": "data/hatchery_health.json",
+      "_status": "not_loaded",
+      "_feeds": "page9 F_ROH × H plane scatter + comparator table · page8 breeding (auto-derived hatchery-health verdict row)",
+      "_source_pipeline": "manual curation — focal cohort from MODULE_3 + literature peer cohorts",
+      "_legacy_window_state": "window.state._hatcheryHealth"
+    },
+
+    "ngsadmix_q": {
+      "tier": "warm",
+      "source": "file",
+      "path": "data/ngsadmix/Q_K{k}.json",
+      "_status": "not_loaded",
+      "_feeds": "page3 NGSadmix Q-bar plots (rounds 1 and 2)",
+      "_source_pipeline": "MODULE_2B NGSadmix sweep K=2..K_max"
+    },
+
+    "pcangsd_pca": {
+      "tier": "warm",
+      "source": "file",
+      "path": "data/pcangsd/pca.json",
+      "_status": "not_loaded",
+      "_feeds": "page3 PCAngsd PCA scatter",
+      "_source_pipeline": "MODULE_2B/04_pcangsd"
+    },
+
+    "ngsrelate_kinship": {
+      "tier": "warm",
+      "source": "file",
+      "path": "data/ngsrelate/kinship_matrix.json",
+      "_status": "not_loaded",
+      "_feeds": "page3 kinship heatmap · NAToRA diagram",
+      "_source_pipeline": "MODULE_2B/02_ngsrelate"
+    },
+
+    "module_qc_summary": {
+      "tier": "warm",
+      "source": "file",
+      "path": "data/qc/module_qc_summary.json",
+      "_status": "not_loaded",
+      "_feeds": "page2 coverage histogram · missingness scatter · QC pass/fail flags",
+      "_source_pipeline": "MODULE_QC (mosdepth + VerifyBamID2 + BEAGLE GP rollup)"
+    }
+  }
+}

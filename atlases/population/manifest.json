@@ -1,0 +1,125 @@
+{
+  "atlas_id": "population",
+  "atlas_name": "Population Atlas",
+  "atlas_version": "2026-05-11-round1",
+  "atlas_description": "Cohort-summary lens for the 226-sample pure C. gariepinus hatchery cohort. Samples, QC, families & genetic clusters (PCAngsd/NGSadmix/ngsRelate/NAToRA), cohort-level heterozygosity / diversity / inbreeding summaries, hatchery-health verdict (F_ROH × H plane), and a breeding-committee sample-highlights table.",
+  "_cohort": "226-sample pure C. gariepinus hatchery cohort. Same cohort as the Inversion Atlas and the Diversity Atlas. NOT the F₁ hybrid (Genome Atlas).",
+  "pages": [
+    {
+      "id": "page1",
+      "label": "samples",
+      "stage": "qc",
+      "fragment": "atlases/population/pages/qc/page1.html",
+      "module": "atlases/population/pages/qc/page1.js",
+      "tooltip": "Samples — table of all 226 samples with sample_id, family, broodline, ancestry-Q top assignment, F_ROH, mean het. The orientation page: every reader starts here."
+    },
+    {
+      "id": "page2",
+      "label": "QC",
+      "stage": "qc",
+      "fragment": "atlases/population/pages/qc/page2.html",
+      "module": "atlases/population/pages/qc/page2.js",
+      "tooltip": "Quality Control — per-sample mean coverage, callable fraction, missingness, kinship-pruning status. Pass/fail flags."
+    },
+    {
+      "id": "page3",
+      "label": "families & clusters",
+      "stage": "structure",
+      "fragment": "atlases/population/pages/structure/page3.html",
+      "module": "atlases/population/pages/structure/page3.js",
+      "tooltip": "Families & Genetic clusters — NGSadmix bar plot, NAToRA pruning diagram, family-tree relatedness, K=2/3/4 breakdowns."
+    },
+    {
+      "id": "page4",
+      "label": "heterozygosity ↗",
+      "stage": "structure",
+      "fragment": "atlases/population/pages/structure/page4.html",
+      "module": "atlases/population/pages/structure/page4.js",
+      "tooltip": "Heterozygosity — cohort summary; deep per-sample tables and plots in the Diversity Atlas."
+    },
+    {
+      "id": "page5",
+      "label": "diversity ↗",
+      "stage": "structure",
+      "fragment": "atlases/population/pages/structure/page5.html",
+      "module": "atlases/population/pages/structure/page5.js",
+      "tooltip": "Diversity — cohort summary; per-chromosome and per-window θπ in the Diversity Atlas."
+    },
+    {
+      "id": "page6",
+      "label": "inbreeding ↗",
+      "stage": "structure",
+      "fragment": "atlases/population/pages/structure/page6.html",
+      "module": "atlases/population/pages/structure/page6.js",
+      "tooltip": "Inbreeding — cohort summary; F_ROH atlas and ROH composition in the Diversity Atlas."
+    },
+    {
+      "id": "page9",
+      "label": "hatchery health",
+      "stage": "health",
+      "fragment": "atlases/population/pages/health/page9.html",
+      "module": "atlases/population/pages/health/page9.js",
+      "tooltip": "Hatchery health — F_ROH × H plane. Each stock placed in 2D (F_ROH, H/H_ref) space; quadrant-based verdict. New framework introduced in the manuscript Discussion as 'diversity-contextualised F_ROH'."
+    },
+    {
+      "id": "page8",
+      "label": "breeding",
+      "stage": "health",
+      "fragment": "atlases/population/pages/health/page8.html",
+      "module": "atlases/population/pages/health/page8.js",
+      "tooltip": "Breeding — sample highlights table for breeding review. One row per sample with a notable diversity, relatedness, inversion, burden, or marker-control feature."
+    },
+    {
+      "id": "page7",
+      "label": "about",
+      "stage": "help",
+      "fragment": "atlases/population/pages/help/page7.html",
+      "module": "atlases/population/pages/help/page7.js",
+      "tooltip": "About this atlas — what it is, how it relates to the Local PCA Scrubber, where the data comes from, glossary."
+    }
+  ],
+  "registries": {
+    "layers": "atlases/population/registries/data/layers.registry.json",
+    "files": "atlases/population/registries/data/files.registry.json",
+    "operations": "atlases/population/registries/data/operations.registry.json",
+    "pages": "atlases/population/registries/data/pages.registry.json",
+    "slots": "atlases/population/registries/data/slots.registry.json"
+  },
+  "shared_modules": {},
+  "engines_dir": "atlases/population/engines/",
+  "analysis_dir": "atlases/population/analysis/",
+  "css_dir": "atlases/population/css/",
+  "stylesheets": [
+    "atlases/population/css/population.css"
+  ],
+  "_stylesheets_doc": "Atlas-wide stylesheet for the Population Atlas. Round 1 ships a single bundle extracted verbatim from the legacy Population_atlas.html <style> block: yellow/amber accent palette, page-content layout, summary cards, planning grids, cross-atlas callout (green), breeding-page traffic-light table, and F_ROH × H plane styling. Future rounds split into per-page stylesheets.",
+  "scope_pickers": [],
+  "_scope_pickers_doc": "No scope pickers in round 1. When per-chromosome views land (phase C+), add an activeChrom picker analogous to the Inversion Atlas's.",
+  "stages": [
+    {
+      "id": "qc",
+      "label": "qc",
+      "order": 1,
+      "description": "Per-sample orientation: samples table, QC pass/fail flags."
+    },
+    {
+      "id": "structure",
+      "label": "structure",
+      "order": 2,
+      "description": "Cohort-level structure & population genetics: families & clusters, cohort-summary heterozygosity / diversity / inbreeding pointers."
+    },
+    {
+      "id": "health",
+      "label": "health",
+      "order": 3,
+      "description": "Stock-level health & breeding review: F_ROH × H plane verdict, breeding-committee sample highlights."
+    },
+    {
+      "id": "help",
+      "label": "help",
+      "order": 4,
+      "description": "About / glossary / cross-references."
+    }
+  ],
+  "_stages_doc": "Four stages chosen to group the nine pages by audience and workflow: qc (page1 samples, page2 QC), structure (page3 families & clusters, page4-6 cohort-level diversity summaries), health (page9 hatchery health, page8 breeding), help (page7 about). Stage labels intentionally lowercase to match the Inversion Atlas convention. Picked one of the four options floated in KICKOFF_population_atlas.md §Q2 — the four-stage variant, but with `health` substituted for `relatedness` + `founders` since the scaffold's actual page set centers on the F_ROH×H framework and the breeding highlights rather than a separate relatedness/founders pair."
+}

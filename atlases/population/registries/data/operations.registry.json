@@ -1,0 +1,6 @@
+{
+  "$schema": "../../../../core/registry_core.schema.json",
+  "_doc": "Backend operations for the Population Atlas. Round 1 is empty — there is no Population Atlas server. The cohort-level summary objects (PCAs, K matrices, kinship, F_ROH tables) are kilobyte-to-megabyte scale and load as static JSON; no live compute is needed. Per KICKOFF_population_atlas.md §Q3, this is the recommended posture for the Population Atlas.",
+  "_round1_status": "empty — no server-side compute.",
+  "operations": {}
+}

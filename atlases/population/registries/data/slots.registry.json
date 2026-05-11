@@ -1,0 +1,77 @@
+{
+  "$schema": "../../../../core/registry_core.schema.json",
+  "_doc": "Cross-page state slots for the Population Atlas. Round 1 declares the SHARED slots the atlas is likely to read (activeChrom from the Inversion Atlas, candidate for cross-atlas hand-off) and the page-private slots consumed by the lifted-verbatim breeding (page8) + hatchery-health (page9) JS. Page-private slots match the names used by the scaffold's inline JS (window.state._breedingPage / window.state._hatcheryHealth) so the verbatim-lifted code keeps working unchanged.",
+  "_round1_status": "Cross-atlas slots (activeChrom, candidate) declared but not yet consumed by any page renderer. Page-private slots (_breedingPage, _hatcheryHealth) consumed by page8 / page9 directly.",
+  "slots": {
+
+    "_section_1": "==== CROSS-ATLAS slots (shared.*) ====",
+
+    "activeChrom": {
+      "type": "string",
+      "default": null,
+      "persist": false,
+      "scope": "shared",
+      "_status": "reserved_for_phase_C",
+      "_doc": "Cross-atlas: the active chromosome in the Inversion Atlas. Population Atlas listens for changes when per-chromosome views land (e.g. a chrom-resolved F_ROH or θπ strip)."
+    },
+
+    "candidate": {
+      "type": "object",
+      "default": null,
+      "persist": false,
+      "scope": "shared",
+      "_status": "reserved",
+      "_doc": "Cross-atlas: the active inversion candidate. Future use — enable cross-atlas deep-link to the breeding page filtered by the candidate's carrier set."
+    },
+
+    "_section_2": "==== POPULATION-PRIVATE transient slots (in-memory only) ====",
+
+    "_breedingPage": {
+      "type": "object",
+      "default": null,
+      "persist": false,
+      "_doc": "Page8 breeding-table UI state — { view_mode, filter_status, filter_source, user_rows, derived_rows, metadata }. Lifted-verbatim shape from the scaffold's _bpEnsureState().",
+      "_legacy_window_state": "window.state._breedingPage"
+    },
+
+    "_hatcheryHealth": {
+      "type": "object",
+      "default": null,
+      "persist": false,
+      "_doc": "Page9 F_ROH × H plane state — { cohorts: [{cohort, species, F_ROH, H_per_site, H_ref, is_focal, citation, notes, ref_url}], metadata }. Lifted-verbatim shape from the scaffold's _fhhEnsureState().",
+      "_legacy_window_state": "window.state._hatcheryHealth"
+    },
+
+    "perSampleStats": {
+      "type": "array",
+      "default": null,
+      "persist": false,
+      "_doc": "Per-sample summary stats consumed by the breeding page's auto-derivation hooks (top-1% F_ROH / θπ / burden). Shape: array of { sample, F_ROH, theta_pi, het, deleterious_burden, ... }. Produced by MODULE_2B + MODULE_3 + MODULE_CONSERVATION rollup; not yet registered as a layer source.",
+      "_legacy_window_state": "window.state.perSampleStats"
+    },
+
+    "familyClusters": {
+      "type": "object",
+      "default": null,
+      "persist": false,
+      "_doc": "Family-cluster manifest consumed by the breeding page's auto-derivation hook (largest family cluster → yellow). Shape: { largest_cluster_size, clusters: [{cluster_id, members: [sample]}] }.",
+      "_legacy_window_state": "window.state.familyClusters"
+    },
+
+    "inversionCarriers": {
+      "type": "array",
+      "default": null,
+      "persist": false,
+      "_doc": "Cross-atlas import from the Inversion Atlas karyotype assignments. Shape: array of { sample, inversion_id, frequency_in_cohort }.",
+      "_legacy_window_state": "window.state.inversionCarriers"
+    },
+
+    "markerControls": {
+      "type": "array",
+      "default": null,
+      "persist": false,
+      "_doc": "Cross-atlas import from the Inversion Atlas page18 marker_panel.json controls block. Shape: array of { sample, marker_id, role: 'positive_INV' | 'positive_HET' | 'negative_STD' }.",
+      "_legacy_window_state": "window.state.markerControls"
+    }
+  }
+}

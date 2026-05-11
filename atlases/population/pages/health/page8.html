@@ -1,0 +1,179 @@
+<div id="page8" class="page">
+  <div class="page-content">
+    <div class="page-title">Sample highlights for breeding review</div>
+    <div class="page-subtitle">
+      Selected broodstock samples with notable diversity, relatedness,
+      inversion, burden, or marker-control features &middot; one row = one
+      sample-level reason to inspect or preserve that fish
+    </div>
+
+    <div class="card card-stripe-breed">
+      <div class="card-header">
+        <div class="card-title">What this page shows</div>
+        <div class="card-status planned" id="bpStatusBadge">scaffold &middot; load <code>breeding_highlights.json</code> to populate</div>
+      </div>
+      <div style="margin-bottom: 8px;">
+        A short, committee-friendly list of <b>flagged broodstock samples</b>.
+        Each row is one fish that stands out for one specific reason
+        (high inbreeding, member of a large family cluster, rare inversion
+        haplotype carrier, marker-validation control, etc.). The page
+        deliberately keeps interpretation minimal &mdash; it is a
+        <b>visual highlight list</b>, not a decision table.
+      </div>
+      <div style="color: var(--ink-dim);">
+        Default view shows 4 columns: <code>Sample</code> &middot;
+        <code>Highlight</code> &middot; <code>Value</code> &middot;
+        <code>Source</code> with a traffic-light status dot. Toggle to
+        <i>detailed</i> view to see the dataset path, raw values, and
+        per-row notes.
+      </div>
+    </div>
+
+    <div class="bp-legend">
+      <div class="bp-legend-item">
+        <span class="bp-dot bp-green"></span>
+        <span><b>useful / preserve</b> &middot; high diversity, rare carrier, validated control</span>
+      </div>
+      <div class="bp-legend-item">
+        <span class="bp-dot bp-yellow"></span>
+        <span><b>review / balance</b> &middot; moderate concern, member of large family cluster</span>
+      </div>
+      <div class="bp-legend-item">
+        <span class="bp-dot bp-red"></span>
+        <span><b>caution</b> &middot; high inbreeding, high deleterious burden, top-1% concerning</span>
+      </div>
+    </div>
+
+    <div class="bp-source-cards" id="bpSourceCards">
+      <!-- Auto-populated counts per source category. Empty until rows load. -->
+    </div>
+
+    <div class="bp-toolbar">
+      <div class="bp-view-toggle" id="bpViewToggle" role="group" aria-label="View mode">
+        <button id="bpViewSimpleBtn" class="active" type="button">Simple</button>
+        <button id="bpViewDetailedBtn" type="button">Detailed</button>
+      </div>
+      <label class="bp-tb-label">Status
+        <select id="bpFilterStatus">
+          <option value="all">all</option>
+          <option value="green">🟢 useful</option>
+          <option value="yellow">🟡 review</option>
+          <option value="red">🔴 caution</option>
+        </select>
+      </label>
+      <label class="bp-tb-label">Source
+        <select id="bpFilterSource">
+          <option value="all">all sources</option>
+        </select>
+      </label>
+      <div class="bp-tb-spacer"></div>
+      <button class="bp-tb-btn" id="bpLoadBtn" title="Upload a breeding_highlights.json or .tsv with manually curated rows.">load highlights&hellip;</button>
+      <input type="file" id="bpLoadInput" class="pop-file-hidden" accept=".json,.tsv,.txt">
+      <button class="bp-tb-btn" id="bpExportCsvBtn" title="Download the current table as CSV.">export CSV</button>
+      <button class="bp-tb-btn" id="bpResetBtn" title="Drop user upload; re-derive from atlas state only.">reset</button>
+    </div>
+
+    <div id="bpTableSlot">
+      <!-- Table renders here. Empty-state message appears when no rows are loaded. -->
+    </div>
+
+    <div class="card card-stripe-breed" id="bpDataSourcesCard">
+      <div class="card-header">
+        <div class="card-title">Where rows come from</div>
+        <div class="card-status planned">5 source categories</div>
+      </div>
+      <div style="margin-bottom: 10px; color: var(--ink-dim);">
+        Rows are <b>auto-derived</b> from atlas state when the relevant data
+        layer is loaded; otherwise rows can be added <b>manually</b> via a
+        <code>breeding_highlights.json</code> upload. The five source
+        categories:
+      </div>
+      <div class="pg pop-pg-bpsources">
+        <div class="pg-header">source</div>
+        <div class="pg-header">criterion</div>
+        <div class="pg-header">where it comes from</div>
+        <div class="pg-header">default dot</div>
+
+        <div><code>Diversity</code></div>
+        <div>top-1% F_ROH / π / H</div>
+        <div>Diversity Atlas tab 1 (per-sample) when JSON layer loads</div>
+        <div>red (F_ROH) · green (π / H)</div>
+
+        <div><code>Relatedness</code></div>
+        <div>member of largest family cluster</div>
+        <div>Population Atlas page 3 (NAToRA + family-tree JSON)</div>
+        <div>yellow</div>
+
+        <div><code>Burden</code></div>
+        <div>top-1% deleterious burden</div>
+        <div>MODULE_CONSERVATION (SIFT4G + VESM_650M) per-sample summary</div>
+        <div>red</div>
+
+        <div><code>Inversions</code></div>
+        <div>rare-haplotype carrier</div>
+        <div>Inversion Atlas page 18 marker panel + page 1 karyotype assignments</div>
+        <div>green</div>
+
+        <div><code>Markers</code></div>
+        <div>positive / negative validation control</div>
+        <div>Inversion Atlas page 18 <code>marker_panel.json</code> controls block</div>
+        <div>green</div>
+      </div>
+    </div>
+
+    <div class="card card-stripe-breed">
+      <div class="card-header">
+        <div class="card-title">Upload format — <code>breeding_highlights.json</code></div>
+        <div class="card-status">overlay schema</div>
+      </div>
+      <div style="margin-bottom: 8px; color: var(--ink-dim);">
+        Same file accepted as <code>.json</code> or <code>.tsv</code>. Each
+        row carries the four required fields plus optional metadata for the
+        detailed view. The <code>status</code> field maps directly to the
+        traffic-light dot.
+      </div>
+      <pre class="pop-code-block">{
+  "metadata": { "panel_name": "Breeding committee Q2 review", "date": "..." },
+  "rows": [
+    { "sample": "CGA001",
+      "highlight": "High inbreeding on Chr17",
+      "value": "top 1% F_ROH",
+      "source": "Diversity",
+      "status": "red",
+      "notes": "F_ROH = 0.387, chr17 ROH segment 12.4 Mb",
+      "ref_url": "Diversity_atlas.html#page1" },
+    { "sample": "CGA044",
+      "highlight": "Rare inversion haplotype carrier",
+      "value": "INV_LG05_002",
+      "source": "Inversions",
+      "status": "green",
+      "ref_url": "Inversion_atlas.html#page18" }
+  ]
+}</pre>
+      <div style="color: var(--ink-dim); font-size: 10.5px;">
+        TSV variant: header row with columns <code>sample</code> &middot;
+        <code>highlight</code> &middot; <code>value</code> &middot;
+        <code>source</code> &middot; <code>status</code> &middot; (optional)
+        <code>notes</code> &middot; <code>ref_url</code>.
+      </div>
+    </div>
+
+    <div class="card card-stripe-breed">
+      <div class="card-header">
+        <div class="card-title">Methods note</div>
+        <div class="card-status">manuscript-ready</div>
+      </div>
+      <div style="color: var(--ink-dim); font-size: 10.5px; line-height: 1.55;">
+        Sample highlights are surfaced from the cohort's per-sample population
+        statistics (F_ROH, mean &theta;<sub>&pi;</sub>, mean heterozygosity,
+        deleterious burden) and from the inversion atlas's karyotype
+        assignments + marker-control set. Top-1% thresholds are computed from
+        the 226-sample empirical distribution per metric. <b>Highlights are a
+        review aid, not a breeding-decision table</b>; final pairing
+        decisions should be made by the breeding committee with reference to
+        pedigree records, the full Diversity Atlas drill-downs, and the
+        Inversion Atlas marker validation status.
+      </div>
+    </div>
+  </div>
+</div>
