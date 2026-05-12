@@ -1,0 +1,72 @@
+{
+  "thin_int": 500,
+  "tree_K": 4,
+  "K_available": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "theta_cuts": {
+    "duplicate": 0.354,
+    "first_degree": 0.177,
+    "second_degree": 0.0884,
+    "third_degree": 0.0442
+  },
+  "pair_summary": {
+    "total_pairs": 25425,
+    "duplicate_mz": 3,
+    "first_degree": 406,
+    "second_degree": 1148,
+    "third_degree": 1201,
+    "unrelated": 22667
+  },
+  "pruned_refit_available": false,
+  "retained_n": 81,
+  "removed_n": 145,
+  "comp_palette": [
+    "#8DD3C7",
+    "#FFFFB3",
+    "#BEBADA",
+    "#FB8072",
+    "#80B1D3",
+    "#FDB462",
+    "#B3DE69",
+    "#FCCDE5",
+    "#D9D9D9",
+    "#BC80BD",
+    "#CCEBC5",
+    "#FFED6F"
+  ],
+  "rel_palette": {
+    "self": "#d73027",
+    "dup_retained": "#542788",
+    "dup_removed": "#8073ac",
+    "first_retained": "#2166ac",
+    "first_removed": "#67a9cf",
+    "second_retained": "#1b7837",
+    "second_removed": "#7fbf7b",
+    "third_retained": "#e08214",
+    "third_removed": "#fdb863",
+    "unrel_retained": "#f0f0f0",
+    "unrel_removed": "#bdbdbd"
+  },
+  "resid_palette": {
+    "low": "#001260",
+    "mid": "#EAEDE9",
+    "high": "#601200"
+  },
+  "resid_score_palette": {
+    "low": "#FFFFFF",
+    "high": "#601200"
+  },
+  "note_synthetic": "Q and corres synthesized for sandbox test; real bundle from build_carousel_bundle.R uses real qopts/corres",
+  "kinship_available": true
+}
