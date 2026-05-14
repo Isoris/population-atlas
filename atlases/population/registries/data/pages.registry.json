@@ -1,13 +1,15 @@
 {
   "$schema": "../../../../core/registry_core.schema.json",
-  "_doc": "Per-page data and slot requirements for the Population Atlas. Round 1 ships the nine scaffold pages carved out of legacy/Population_atlas.html. Pages 1-6 are scaffold cards with no layer requirements; pages 7 (about) and 4-6 (heterozygosity/diversity/inbreeding) are pure cross-references pointing to the Diversity Atlas. Pages 8 (breeding) and 9 (hatchery health) carry real interactive logic and expect JSON layers when wired (round 2+). Registry content (requires_layers / requires_slots / preloads) is OUT-OF-SCOPE for migrations — see HANDOFF round 5 step 17 of the Inversion Atlas. Round 1 only adds _label + _doc.",
+  "_doc": "Per-page data and slot requirements for the Population Atlas. Round 1 ships the nine scaffold pages carved out of legacy/Population_atlas.html. Pages 1-6 are scaffold cards with no layer requirements; pages 7 (about) and 4-6 (heterozygosity/diversity/inbreeding) are pure cross-references pointing to the Diversity Atlas. Pages 8 (breeding) and 9 (hatchery health) carry real interactive logic and expect JSON layers when wired (round 2+). Registry content (requires_layers / requires_slots / preloads) is OUT-OF-SCOPE for migrations — see HANDOFF round 5 step 17 of the Inversion Atlas. Round 1 added _label + _doc; round 2 (2026-05-14) wires requires_operations against atlas-core's shared atlas_server.py per operations.registry.json. requires_layers remains empty pending the round-3 upstream-producer registration.",
   "_round1_status": "skeleton — nine pages declared, all requires_* arrays empty. The breeding (page8) and hatchery-health (page9) JS lifted verbatim from the scaffold reads window.state.* slots that don't yet have a registered upstream producer; expect to fill requires_layers + producer registrations in round 2.",
+  "_round2_status": "requires_operations populated for pages 1, 2, 3, 8, 9. The four shared atlas-core endpoints (popstats_groupwise, popstats_hobs_groupwise, ancestry_groupwise_q, actions_submit + actions_status + layers_list + layers_get) are now declared as page dependencies where used. requires_layers stays empty: the file-backed layers (per_sample_stats, family_clusters, etc.) are CONTRACT-ONLY today (see layers.registry.json _round1_status) and will be moved into requires_layers in round 3 once the upstream pipelines emit the JSON.",
   "pages": {
     "page1": {
       "_label": "samples — orientation table",
       "_doc": "226-row sample table with sample_id, family, broodline, mean_coverage, callable_fraction, genome_het, F_ROH, ancestry_Q_top, natora_status, qc_pass. Round 1 is the scaffold card with planned-fields table + ASCII mockup; round 2 wires the sortable JSON-driven table from MODULE_2B + pedigree manifest.",
       "requires_layers": [],
-      "requires_operations": [],
+      "requires_operations": ["population_slot_get", "layers_list", "layers_get"],
+      "_requires_operations_doc": "page1 reads the per_sample_stats slot via the population_endpoint sidecar (GET /api/population/per_sample_stats). layers_list / layers_get are the fallback path once per_sample_stats is also produced as an envelope by actions_submit. No groupwise compute on this page — it is read-only orientation.",
       "requires_slots": [],
       "preloads": []
     },
@@ -15,7 +17,8 @@
       "_label": "QC — per-sample quality control",
       "_doc": "Per-sample mean coverage, callable fraction, missingness, contamination (VerifyBamID2 FREEMIX/CHIPMIX), kinship-pruning status. Round 1 is the scaffold card with QC thresholds + planned-panels grid; round 2 wires the histogram + missingness-vs-coverage scatter from MODULE_QC.",
       "requires_layers": [],
-      "requires_operations": [],
+      "requires_operations": ["population_slot_get", "actions_submit", "actions_status", "layers_list", "layers_get"],
+      "_requires_operations_doc": "page2 reads the module_qc_summary slot via the population_endpoint sidecar (GET /api/population/module_qc_summary). The 'recompute QC' button posts an actions_submit manifest (action_type='recompute_qc') and polls actions_status until produced layers land in the layers index.",
       "requires_slots": [],
       "preloads": []
     },
@@ -23,7 +26,18 @@
       "_label": "families & genetic clusters — NGSadmix / NAToRA / kinship / PCAngsd",
       "_doc": "Two-round structure analysis (all 226 → NAToRA-pruned 81). Round 1 is the scaffold with six planned-panel slots (Q-bar plots, kinship heatmap, NAToRA diagram, PCAngsd PCA, evalAdmix residuals). Round 2 wires the panels to MODULE_2B outputs.",
       "requires_layers": [],
-      "requires_operations": [],
+      "requires_operations": [
+        "population_slot_get",
+        "population_ngsadmix_q",
+        "popstats_groupwise",
+        "popstats_hobs_groupwise",
+        "ancestry_groupwise_q",
+        "actions_submit",
+        "actions_status",
+        "layers_list",
+        "layers_get"
+      ],
+      "_requires_operations_doc": "page3 is the structure-heavy page. Sidecar slots: population_slot_get for pcangsd_pca + ngsrelate_kinship + family_clusters; population_ngsadmix_q (K-templated) for the NGSadmix Q-bar panel across K=2..12. Compute ops: popstats_groupwise computes FST/dXY/θπ between K-clusters or NAToRA-pruned families; popstats_hobs_groupwise gives per-cluster H; ancestry_groupwise_q renders per-family / per-cluster mean Q. The 'rerun NGSadmix at K=X' control submits an actions_submit manifest (action_type='rerun_ngsadmix') and polls via actions_status.",
       "requires_slots": [],
       "preloads": []
     },
@@ -64,7 +78,8 @@
       "_label": "breeding — sample highlights for breeding committee review",
       "_doc": "Sample-highlights table with traffic-light status (green useful / yellow review / red caution) and five source categories (Diversity / Relatedness / Burden / Inversions / Markers). Round 1 lifts the scaffold's auto-derivation hooks + JSON/TSV upload + CSV export VERBATIM as page8.js. Auto-derivation reads window.state.perSampleStats / familyClusters / inversionCarriers / markerControls (none yet produced by registry-registered layers). Round 2+ replaces window.state.* reads with proper registry layer subscriptions.",
       "requires_layers": [],
-      "requires_operations": [],
+      "requires_operations": ["population_slot_get", "layers_list", "layers_get"],
+      "_requires_operations_doc": "page8 is read-mostly in round 2. The five upstream slots (per_sample_stats, family_clusters, inversion_carriers, marker_controls, hatchery_health_cohorts) are fetched via population_slot_get and replace the corresponding window.state.* read. No live compute is invoked from page8 itself; the round-3 planned op breeding_highlights_derive (see operations.registry.json _planned_round3) will centralise the auto-derivation rules server-side.",
       "requires_slots": [],
       "preloads": [],
       "_consumes_window_state": ["perSampleStats", "familyClusters", "inversionCarriers", "markerControls", "_hatcheryHealth"]
@@ -73,7 +88,8 @@
       "_label": "hatchery health — F_ROH × H plane (diversity-contextualised F_ROH)",
       "_doc": "Stock-level verdict combining autozygosity (F_ROH) and species-baseline-referenced heterozygosity (H/H_ref). Four-quadrant verdict (Healthy / Recent inbreeding / Diversity erosion / Caution). Inline SVG scatter + comparator table + JSON/TSV upload + CSV export. Round 1 lifts the scaffold's _fhh* helpers VERBATIM as page9.js. The focal cohort's verdict is also surfaced as an auto-row on page8 via the _bpAutoHatcheryHealthRow hand-off. Novel framework introduced in manuscript Discussion; the page is its operational form.",
       "requires_layers": [],
-      "requires_operations": [],
+      "requires_operations": ["population_slot_get", "layers_list", "layers_get"],
+      "_requires_operations_doc": "page9 reads the hatchery_health_cohorts slot via population_slot_get (GET /api/population/hatchery_health_cohorts). Classification stays in browser-side JS in round 2 (verbatim-lifted _fhh* helpers); the round-3 planned op hatchery_health_classify (see operations.registry.json _planned_round3) promotes the four-quadrant verdict to a server endpoint shared with page8's auto-row hand-off.",
       "requires_slots": [],
       "preloads": [],
       "_consumes_window_state": ["_hatcheryHealth"]

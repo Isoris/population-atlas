@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "staging_ancestry_q_v0.schema.json",
+  "title": "staging_ancestry_q_v0 — loose capture of /api/ancestry/groupwise_q response",
+  "description": "Staging payload echoing the kind='ancestry_groupwise_q.v1' response from atlas_server's ancestry endpoint. Schema is permissive while the per-group aggregation shape is being finalised; promote to ancestry_q_v1 once the keys + units are pinned.",
+  "type": "object",
+  "required": ["chrom", "K", "scale"],
+  "additionalProperties": true,
+  "properties": {
+    "chrom":  { "type": "string" },
+    "region": { "type": ["object", "null"], "additionalProperties": true },
+    "K":      { "type": "integer", "minimum": 2 },
+    "scale":  { "type": "string" },
+    "groups": { "type": "object", "additionalProperties": true },
+    "source": { "type": "string" }
+  }
+}

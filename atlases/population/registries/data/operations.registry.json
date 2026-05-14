@@ -1,6 +1,312 @@
 {
   "$schema": "../../../../core/registry_core.schema.json",
-  "_doc": "Backend operations for the Population Atlas. Round 1 is empty — there is no Population Atlas server. The cohort-level summary objects (PCAs, K matrices, kinship, F_ROH tables) are kilobyte-to-megabyte scale and load as static JSON; no live compute is needed. Per KICKOFF_population_atlas.md §Q3, this is the recommended posture for the Population Atlas.",
-  "_round1_status": "empty — no server-side compute.",
-  "operations": {}
+  "_doc": "Backend operations available to the Population Atlas. There is NO population-private server (no atlases/population/server/...); the atlas calls the shared atlas-core server at atlas-core/server/atlas_server.py PLUS the atlas-specific sidecar router atlas-core/server/population_endpoint.py (mounted under /api/population/, mirrors atlas-core/server/diversity_endpoint.py). Round 2 wiring (2026-05-14) registers (a) the four atlas-core compute endpoints the Population Atlas can use right now (popstats_groupwise, popstats_hobs_groupwise, ancestry_groupwise_q, actions_submit) plus generic file/layer plumbing; (b) the population_endpoint.py JSON-shim slots that surface each file-backed layer at a stable /api/population/<slot> URL. ENDPOINT URLS AND REQUEST SHAPES ARE AUDITED AGAINST the actual Python source — do NOT invent endpoints; if a layer needs server compute, the endpoint must already exist there.",
+
+  "_round1_status_legacy": "empty — no server-side compute (no longer accurate; see _round2_status).",
+  "_round2_status": "Two-source server wiring: (1) shared atlas-core compute endpoints (popstats / ancestry / actions / layers) for groupwise summaries on page3; (2) the population_endpoint.py JSON-shim sidecar — read-only GETs that surface the cohort-level static JSON files at /api/population/<slot>. The sidecar mirrors atlases/diversity/'s pattern verbatim: a tiny APIRouter mounted from atlas_server.py via two lines (`from population_endpoint import make_population_router; app.include_router(make_population_router(_safe_project_path))`). The mount line is NOT YET in atlas_server.py at audit time (held back per session constraint — another chat is editing atlas_server.py). Until mounted, /api/population/<slot> returns 404 from the FastAPI router itself; the same files remain reachable via the generic GET /file/<path> fallback.",
+
+  "_server_audit_origin": {
+    "source_file_primary":  "atlas-core/server/atlas_server.py",
+    "source_file_sidecar":  "atlas-core/server/population_endpoint.py",
+    "sidecar_test_file":    "atlas-core/server/test_population_endpoint.py",
+    "audited_at":           "2026-05-14",
+    "audited_against":      "atlas-core HEAD on main (post popstats_server.py → atlas_server.py move; pre-population_endpoint.py mount)",
+    "endpoint_count_referenced": 10,
+    "_note": "Endpoint line numbers below are 1-indexed at audit time. If a file is renumbered, the @app.<method>('<path>') anchor is still the source of truth — not the line number."
+  },
+
+  "_server_url_default": "http://localhost:8765",
+  "_server_connection_doc": "The shared atlas-core server runs on LANTA. Reach it via SSH tunnel: 'ssh -L 8765:127.0.0.1:8765 lanta'. See atlas-core/server/SERVER_README.md.",
+
+  "_groupwise_contract": "All three groupwise operations (popstats_groupwise, popstats_hobs_groupwise, ancestry_groupwise_q) enforce min_group_n (default 10) AGAINST THE FILTERED-TO-KNOWN sample list — unknown sample_ids are silently dropped, then the floor is applied. Group names must match [A-Za-z0-9_]+. Population-side callers SHOULD pass the NGSadmix K-clusters or NAToRA-pruned family clusters as the groups dict; whole-cohort calls pass a single group named 'all_226'.",
+
+  "operations": {
+
+    "popstats_groupwise": {
+      "_endpoint_origin": "atlas_server.py:1772 @app.post('/api/popstats/groupwise')",
+      "_wraps": "region_popstats (Engine F, in unified_ancestry/engines/fst_dxy/region_popstats)",
+      "endpoint": "/api/popstats/groupwise",
+      "method": "POST",
+      "request_shape": {
+        "chrom": "string (e.g. 'C_gar_LG28')",
+        "region": { "start_bp": "int", "end_bp": "int", "_optional": true },
+        "groups": { "<group_name>": ["<sample_id>", "..."] },
+        "metrics": "list of strings, default ['fst', 'dxy', 'theta_pi']",
+        "win_bp": "int, default 50000",
+        "step_bp": "int, default 10000",
+        "win_type": "int, default 2",
+        "downsample": "int, default 1",
+        "ncores": "int, default 4"
+      },
+      "inputs": ["groupComposition"],
+      "_inputs_doc": "Population Atlas typically groups by NGSadmix K-cluster assignment (page3) or by NAToRA-pruned family (page3 deep-dive). No activeChrom slot is wired in round 2 — callers pass the chrom string explicitly. The Inversion Atlas's activeChrom hand-off lands in round 3+.",
+      "output_schema": "schemas/popstats_groupwise.schema.json",
+      "cache_key": "popstats_groupwise:{chrom}:{groups_hash}:{metrics_hash}:{win_bp}:{step_bp}",
+      "cache_tier": "warm",
+      "estimated_latency_ms": 2000,
+      "_consumed_by_pages": ["page3"],
+      "_doc": "FST + dXY + theta_pi for arbitrary group compositions. Page3 uses this to compute between-K-cluster FST when NGSadmix assignments are stable, and between-family FST when the family clusters from ngsRelate/NAToRA are stable. Up to 10 groups per request. Members validated against canonical sample list; unknowns dropped silently. Group names match [A-Za-z0-9_]+."
+    },
+
+    "popstats_hobs_groupwise": {
+      "_endpoint_origin": "atlas_server.py:1926 @app.post('/api/popstats/hobs_groupwise')",
+      "_wraps": "angsd_fixed_HWE -doHWE + hobs_windower",
+      "endpoint": "/api/popstats/hobs_groupwise",
+      "method": "POST",
+      "request_shape": {
+        "chrom": "string",
+        "region": { "start_bp": "int", "end_bp": "int", "_optional": true },
+        "groups": { "<group_name>": ["<sample_id>", "..."] },
+        "scales": "list of strings, default ['10kb']"
+      },
+      "inputs": ["groupComposition"],
+      "_inputs_doc": "Same grouping convention as popstats_groupwise. Population Atlas calls this for cohort-summary H on page4 and for per-K-cluster H on page3.",
+      "output_schema": "schemas/hobs_groupwise.schema.json",
+      "cache_key": "hobs:{chrom}:{groups_hash}:{scales}",
+      "cache_tier": "warm",
+      "estimated_latency_ms": 15000,
+      "_consumed_by_pages": ["page3", "page4_when_wired"],
+      "_doc": "Per-group HoverE (heterozygosity) via Mérot-patched ANGSD. First request for a novel group composition triggers an ANGSD run (~5–15 s per group). Subsequent same-composition requests <100 ms server-side. Page4 currently stays in cross-reference mode (depth lives in the Diversity Atlas); when page4 is upgraded to a live cohort-summary tile, it consumes this op."
+    },
+
+    "ancestry_groupwise_q": {
+      "_endpoint_origin": "atlas_server.py:2052 @app.post('/api/ancestry/groupwise_q')",
+      "_wraps": "instant_q local_Q_samples cache (unified_ancestry/src/instant_q)",
+      "endpoint": "/api/ancestry/groupwise_q",
+      "method": "POST",
+      "request_shape": {
+        "chrom": "string",
+        "region": { "start_bp": "int", "end_bp": "int", "_optional": true },
+        "groups": { "<group_name>": ["<sample_id>", "..."] },
+        "K": "int, default 8",
+        "scale": "string, default 'dense'"
+      },
+      "inputs": ["groupComposition"],
+      "_inputs_doc": "Page3 uses this to render per-family or per-K-cluster mean Q vectors as bar plots. K=8 is the canonical value per session memory; the Population Atlas also requests K=2..K_max for the NGSadmix sweep panel.",
+      "output_schema": "schemas/ancestry_groupwise_q.schema.json",
+      "cache_key": "ancestry_q:{chrom}:{groups_hash}:{K}:{scale}",
+      "cache_tier": "warm",
+      "estimated_latency_ms": 50,
+      "_consumed_by_pages": ["page3"],
+      "_doc": "Reads precomputed instant_q Q-matrix and aggregates per group. Pure file I/O + pandas group-by; ~50 ms uncached, <10 ms cached. Used by page3 NGSadmix-Q bar-plot panel to show how Q varies across families or across K-clusters."
+    },
+
+    "actions_submit": {
+      "_endpoint_origin": "atlas_server.py:2554 @app.post('/api/actions')",
+      "_wraps": "per-atlas dispatcher.dispatch_action(manifest, client)",
+      "endpoint": "/api/actions?atlas=population",
+      "method": "POST",
+      "request_shape": {
+        "action_id": "string (UUID or human-readable slug)",
+        "atlas_id": "string, optional — defaults to ?atlas=population query param",
+        "action_type": "string (e.g. 'recompute_qc', 'rerun_ngsadmix', 'rebuild_kinship')",
+        "params": "object — action-specific params",
+        "submitted_at": "ISO8601 string, optional — server fills if omitted"
+      },
+      "inputs": [],
+      "_inputs_doc": "No slot inputs — the action manifest carries everything. Atlas resolution precedence: ?atlas=population query > manifest.atlas_id > master_config.atlas.active_atlas.",
+      "output_schema": "schemas/actions_submit.schema.json",
+      "cache_key": null,
+      "cache_tier": "none",
+      "estimated_latency_ms": "varies (sync dispatch — depends on action)",
+      "_consumed_by_pages": ["page2", "page3"],
+      "_doc": "Submit an action manifest. The atlas-core server validates, dispatches via the per-atlas dispatcher (atlases/population/registries/dispatcher.py — EXISTS as of this commit; one action registered: compute_ancestry_q), writes returned envelopes under data/_layers/, and appends a success/error entry to actions.log.jsonl. Returns {ok, action_id, atlas_id, produced_layers}. Population uses this to trigger ancestry-Q computation today, and (when more actions land) MODULE_QC re-runs and MODULE_2B re-runs (page3 'rerun NGSadmix at K=X' button)."
+    },
+
+    "actions_status": {
+      "_endpoint_origin": "atlas_server.py:2646 @app.get('/api/actions/{action_id}')",
+      "endpoint": "/api/actions/{action_id}",
+      "method": "GET",
+      "request_shape": {
+        "action_id": "string — path param"
+      },
+      "inputs": [],
+      "output_schema": "schemas/actions_status.schema.json",
+      "cache_key": null,
+      "cache_tier": "none",
+      "estimated_latency_ms": 30,
+      "_consumed_by_pages": ["page2", "page3"],
+      "_doc": "Returns the latest log entry for action_id (the actions log is append-only; later writes win on read). 404 if no entry exists. Used by the Population Atlas to poll long-running re-runs submitted via actions_submit."
+    },
+
+    "layers_list": {
+      "_endpoint_origin": "atlas_server.py:2669 @app.get('/api/layers')",
+      "endpoint": "/api/layers",
+      "method": "GET",
+      "request_shape": {
+        "layer_type": "string, optional (e.g. 'per_sample_stats', 'family_clusters')",
+        "dataset_id": "string, optional",
+        "stage":      "string, optional (one of: qc | structure | health | help)",
+        "status":     "string, optional",
+        "limit":      "int, default 500"
+      },
+      "inputs": [],
+      "output_schema": "schemas/layers_list.schema.json",
+      "cache_key": "layers_list:{filters_hash}",
+      "cache_tier": "cold",
+      "estimated_latency_ms": 50,
+      "_consumed_by_pages": ["page1", "page2", "page3"],
+      "_doc": "Lists registered layer envelopes (most-recent last). Useful for showing 'available data layers' panels on page1 (samples) and page2 (QC). Filter by stage='structure' to see what page3 has access to."
+    },
+
+    "layers_get": {
+      "_endpoint_origin": "atlas_server.py:2697 @app.get('/api/layers/{layer_id}')",
+      "endpoint": "/api/layers/{layer_id}",
+      "method": "GET",
+      "request_shape": {
+        "layer_id": "string — path param"
+      },
+      "inputs": [],
+      "output_schema": "schemas/layer_envelope.schema.json",
+      "cache_key": "layers_get:{layer_id}",
+      "cache_tier": "warm",
+      "estimated_latency_ms": 30,
+      "_consumed_by_pages": ["page1", "page2", "page3", "page8", "page9"],
+      "_doc": "Read the envelope JSON for a layer_id. Used by the layer-fetching client (_atlas_data_loader) when a layers.registry entry has source: 'envelope' rather than source: 'file'. All Population Atlas pages with declared upstream layers can use this; pages 8/9 use it to load hatchery_health_cohorts and per_sample_stats envelopes once those are produced by actions_submit."
+    },
+
+    "_sidecar_section": "==== population_endpoint.py JSON-shim sidecar (mirrors diversity_endpoint.py) ====",
+
+    "population_slot_list": {
+      "_endpoint_origin": "population_endpoint.py:make_population_router @router.get('/slots')",
+      "_wraps": "static slot inventory (SLOTS dict + NGSADMIX_Q_TEMPLATE)",
+      "endpoint": "/api/population/slots",
+      "method": "GET",
+      "request_shape": {},
+      "response_shape": {
+        "slots": "list of string — sorted slot names",
+        "templated_slots": "list of string — slot names that take URL path params (currently only ['ngsadmix_q'])"
+      },
+      "inputs": [],
+      "output_schema": null,
+      "cache_key": "population_slots:static",
+      "cache_tier": "cold",
+      "estimated_latency_ms": 5,
+      "_consumed_by_pages": [],
+      "_doc": "Discovery endpoint: returns the canonical slot inventory. Used by the data loader to know which slots can be requested at /api/population/<slot>. Stable; safe to cache aggressively."
+    },
+
+    "population_slot_get": {
+      "_endpoint_origin": "population_endpoint.py:make_population_router @router.get('/{slot}')",
+      "_wraps": "static JSON file under PROJECT_ROOT (one of eight paths in SLOTS)",
+      "endpoint": "/api/population/{slot}",
+      "method": "GET",
+      "request_shape": {
+        "slot": "string — path param; one of per_sample_stats | family_clusters | inversion_carriers | marker_controls | hatchery_health_cohorts | pcangsd_pca | ngsrelate_kinship | module_qc_summary"
+      },
+      "_slot_to_file": {
+        "per_sample_stats":        "data/per_sample_stats.json",
+        "family_clusters":         "data/family_clusters.json",
+        "inversion_carriers":      "data/inversion_carriers.json",
+        "marker_controls":         "data/marker_controls.json",
+        "hatchery_health_cohorts": "data/hatchery_health.json",
+        "pcangsd_pca":             "data/pcangsd/pca.json",
+        "ngsrelate_kinship":       "data/ngsrelate/kinship_matrix.json",
+        "module_qc_summary":       "data/qc/module_qc_summary.json"
+      },
+      "inputs": [],
+      "output_schema": "see layers.registry.json — each slot's payload schema is the layer it feeds",
+      "cache_key": "population_slot:{slot}:{mtime}",
+      "cache_tier": "warm",
+      "estimated_latency_ms": 20,
+      "_consumed_by_pages": ["page1", "page2", "page3", "page8", "page9"],
+      "_doc": "JSON-shim GET — surfaces a static layer file under a stable URL keyed by slot name (rather than file path). 404 when the file is absent (caller falls back to scaffold 'data pending' empty state). 503 when the /file subsystem is down (no PROJECT_ROOT configured). Same contract as /api/diversity/<slot>; the slot inventory is enumerated in population_endpoint.py SLOTS and tested in test_population_endpoint.py."
+    },
+
+    "population_ngsadmix_q": {
+      "_endpoint_origin": "population_endpoint.py:make_population_router @router.get('/ngsadmix/q/{k}')",
+      "_wraps": "static JSON file data/ngsadmix/Q_K<k>.json under PROJECT_ROOT",
+      "endpoint": "/api/population/ngsadmix/q/{k}",
+      "method": "GET",
+      "request_shape": {
+        "k": "int — path param; in [2, 12]"
+      },
+      "inputs": [],
+      "output_schema": "see layers.registry.json#layers.ngsadmix_q",
+      "cache_key": "population_ngsadmix_q:{k}:{mtime}",
+      "cache_tier": "warm",
+      "estimated_latency_ms": 20,
+      "_consumed_by_pages": ["page3"],
+      "_doc": "JSON-shim GET for the K-templated NGSadmix slot. Separate route because K is part of the URL path. K must be in [2, 12] (NGSadmix sweep range; out-of-range values return 400 rather than 404 so caller mistakes surface). 404 when the Q_K<k>.json file is absent."
+    }
+  },
+
+  "_planned_round3": {
+    "_doc": "Population-Atlas-specific composites that do NOT yet have endpoints in atlas_server.py. These are contract entries: documented now so page-side code can stub against them, but the @app.post / @app.get bindings land in a later round.",
+
+    "_dispatcher_status_doc": "atlases/population/registries/dispatcher.py EXISTS as of audit time. It loads actions.registry.json + extractors.registry.json from registries/data/ and routes manifests through runners (registries/runners/) and extractors (registries/extractors/). One action is registered today: compute_ancestry_q → runners.ancestry.compute_q → extractors.ancestry_q.extract → ancestry_q layer (schema staging_ancestry_q_v0). Additional planned actions are listed below.",
+
+    "compute_ancestry_q_action": {
+      "kind": "registered_action",
+      "action_type": "compute_ancestry_q",
+      "manifest_schema": "schemas/schema_in/compute_ancestry_q_v1.schema.json",
+      "runner": "runners.ancestry.compute_q",
+      "extractor": "extractors.ancestry_q.extract",
+      "produces_layer_type": "ancestry_q",
+      "output_schema": "schemas/schema_out/staging_ancestry_q_v0.schema.json",
+      "wraps_endpoint": "ancestry_groupwise_q (atlas_server.py /api/ancestry/groupwise_q)",
+      "_consumed_by_pages": ["page3"],
+      "_doc": "First registered Population-Atlas action. Submit a manifest with action_type='compute_ancestry_q' + params {chrom, scale, K, groups}; the dispatcher calls the runner which posts to /api/ancestry/groupwise_q, then the extractor parses the response into an ancestry_q layer envelope. Used by page3's NGSadmix Q-bar panel."
+    },
+
+    "kinship_aggregate": {
+      "kind": "server_compute_planned",
+      "endpoint": "/api/population/kinship_aggregate",
+      "method": "POST",
+      "request_shape": {
+        "kinship_matrix_layer_id": "string",
+        "natora_threshold": "float, default 0.1",
+        "scope": "string, one of 'full_226' | 'unpruned' | 'natora_pruned'"
+      },
+      "output_shape": "{ n_kept, n_dropped, family_clusters, largest_cluster_size, _trace }",
+      "_consumed_by_pages": ["page3"],
+      "_doc": "Wrap NAToRA pruning + family-tree clustering as a server compute. Today this runs in the catfish-population-analysis MODULE_2B pipeline (offline). Promotion would let the Population Atlas re-prune live at a user-specified threshold and see the family clusters update interactively."
+    },
+
+    "cohort_summary_stats": {
+      "kind": "server_compute_planned",
+      "endpoint": "/api/population/cohort_summary",
+      "method": "POST",
+      "request_shape": {
+        "scope": "string, one of 'full_226' | 'natora_pruned'",
+        "metrics": "list of strings, default ['mean_H', 'median_H', 'mean_F_ROH', 'median_F_ROH', 'rho_H_FROH', 'KW_H_by_K8']"
+      },
+      "output_shape": "{ <metric>: <number>, _provenance: { source_layers, computed_at } }",
+      "_consumed_by_pages": ["page4", "page5", "page6"],
+      "_doc": "Produce the cohort-level headline numbers shown on the heterozygosity / diversity / inbreeding cross-reference cards (pages 4/5/6). Today these are hardcoded in the scaffold HTML; promoting to a server endpoint would let them update when MODULE_3 emits fresh per-sample tables."
+    },
+
+    "hatchery_health_classify": {
+      "kind": "server_compute_planned",
+      "endpoint": "/api/population/hatchery_health_classify",
+      "method": "POST",
+      "request_shape": {
+        "focal_cohort": { "F_ROH": "float", "H_per_site": "float", "H_ref": "float" },
+        "peer_cohorts": "list, optional"
+      },
+      "output_shape": "{ verdict: 'Healthy' | 'RecentInbreeding' | 'DiversityErosion' | 'Caution', quadrant: 'NE|NW|SE|SW', distance_to_peers, _trace }",
+      "_consumed_by_pages": ["page9", "page8"],
+      "_doc": "Classify the focal cohort into a quadrant on the F_ROH × H plane. Today the classification logic lives in page9.js (verbatim-lifted from the scaffold's _fhh* helpers). Promoting to a server endpoint would centralise the verdict so page8's auto-derivation hook and page9's plane share the same source of truth (today there is a hand-off via window.state._hatcheryHealth)."
+    },
+
+    "breeding_highlights_derive": {
+      "kind": "server_compute_planned",
+      "endpoint": "/api/population/breeding_highlights_derive",
+      "method": "POST",
+      "request_shape": {
+        "scope": "string, one of 'auto_derive_all' | 'recompute_one_source'",
+        "source": "string, optional — one of 'diversity' | 'relatedness' | 'burden' | 'inversions' | 'markers'",
+        "thresholds": { "_optional": true, "_doc": "Override the default top-1% F_ROH / θπ / burden cutoffs." }
+      },
+      "output_shape": "{ derived_rows: [{ sample, source, status, note }] }",
+      "_consumed_by_pages": ["page8"],
+      "_doc": "Centralise page8's auto-derivation hooks (top-1% F_ROH/θπ/burden, largest family cluster, rare-haplotype carriers, marker positives/negatives) on the server. Today this runs in browser via the verbatim-lifted _bpDerive* helpers reading window.state.*. Promotion makes the breeding-highlights view deterministic and re-runnable from the action log."
+    }
+  },
+
+  "_debug_endpoints_doc": "The shared atlas-core server also exposes /api/cache/keys, /api/cache/keys/<hash> (DELETE), /api/jobs/<job_id>, /health, /api/health. These are not registered as Population-Atlas registry operations because pages don't consume them — they're for the developer console and the toolbar status badge (which polls /health every 30 s).",
+
+  "_engines_referenced": {
+    "_doc": "The Population Atlas does NOT ship its own engines. All compute is delegated to the shared atlas-core server, which in turn calls C/C++ engines living outside the atlas (in unified_ancestry/, angsd_fixed_HWE/). The atlas-core operations registry is the canonical source for engine paths; this entry is informational only."
+  }
 }

@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "compute_ancestry_q_v1.schema.json",
+  "title": "compute_ancestry_q_v1 — manifest contract for groupwise ancestry-Q aggregation",
+  "description": "Validates POST /api/actions when type='compute_ancestry_q'. Wraps /api/ancestry/groupwise_q (atlas_server.py:2061), which reads the instant_q cache and aggregates per-group mean Q for one chromosome × scale × K. The response shape is captured under a staging_ancestry_q_v0 envelope; a normalized ancestry_q_v1 schema will be added once the per-group payload stabilises.",
+  "type": "object",
+  "required": ["target", "params"],
+  "additionalProperties": true,
+  "properties": {
+    "target": {
+      "type": "object",
+      "required": ["chrom", "groups"],
+      "additionalProperties": true,
+      "properties": {
+        "chrom":    { "type": "string", "minLength": 1 },
+        "start_bp": { "type": "integer", "minimum": 0 },
+        "end_bp":   { "type": "integer", "minimum": 1 },
+        "groups": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 1
+          }
+        }
+      }
+    },
+    "params": {
+      "type": "object",
+      "required": ["K"],
+      "additionalProperties": true,
+      "properties": {
+        "K":     { "type": "integer", "minimum": 2, "maximum": 20 },
+        "scale": { "type": "string", "default": "dense" }
+      }
+    }
+  }
+}

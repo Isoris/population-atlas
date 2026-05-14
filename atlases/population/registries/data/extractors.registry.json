@@ -1,0 +1,12 @@
+{
+  "extractors": [
+    {
+      "extractor_id":   "extract_staging_ancestry_q_v0",
+      "layer_type":     "ancestry_q",
+      "schema_version": "staging_ancestry_q_v0",
+      "stage":          "staging",
+      "parser":         "extractors.ancestry_q.extract",
+      "input_format":   "json"
+    }
+  ]
+}

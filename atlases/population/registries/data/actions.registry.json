@@ -1,0 +1,9 @@
+{
+  "actions": {
+    "compute_ancestry_q": {
+      "runner":      "runners.ancestry.compute_q",
+      "schema_in":   "compute_ancestry_q_v1",
+      "description": "Per-group mean Q from the instant_q cache for one (chrom, scale, K). Wraps /api/ancestry/groupwise_q (atlas_server.py @app.post('/api/ancestry/groupwise_q'))."
+    }
+  }
+}
