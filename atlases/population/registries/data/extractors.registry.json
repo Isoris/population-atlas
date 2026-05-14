@@ -7,6 +7,22 @@
       "stage":          "staging",
       "parser":         "extractors.ancestry_q.extract",
       "input_format":   "json"
+    },
+    {
+      "extractor_id":   "extract_staging_population_slot_v0",
+      "layer_type":     "population_slot",
+      "schema_version": "staging_population_slot_v0",
+      "stage":          "staging",
+      "parser":         "extractors.population_slot.extract",
+      "input_format":   "json"
+    },
+    {
+      "extractor_id":   "extract_staging_ngsadmix_q_v0",
+      "layer_type":     "ngsadmix_q",
+      "schema_version": "staging_ngsadmix_q_v0",
+      "stage":          "staging",
+      "parser":         "extractors.population_slot.extract_ngsadmix_q",
+      "input_format":   "json"
     }
   ]
 }

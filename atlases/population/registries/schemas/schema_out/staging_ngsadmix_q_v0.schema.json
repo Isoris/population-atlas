@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "staging_ngsadmix_q_v0.schema.json",
+  "title": "staging_ngsadmix_q_v0 — loose capture of one NGSadmix Q matrix at K",
+  "description": "Staging payload for the K-templated NGSadmix Q-matrix slot. Echoes K + the raw JSON the upstream pipeline wrote. Promote later (ngsadmix_q_v1) once the per-K shape is pinned (samples-by-K float matrix vs columns-by-K vs the embedded-table compact form).",
+  "type": "object",
+  "required": ["K"],
+  "additionalProperties": true,
+  "properties": {
+    "K":     { "type": "integer", "minimum": 2 },
+    "body":  { "description": "Raw JSON document from /api/population/ngsadmix/q/{K}." },
+    "bytes": { "type": "integer", "minimum": 0 }
+  }
+}

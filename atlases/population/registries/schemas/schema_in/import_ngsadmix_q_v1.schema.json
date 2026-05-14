@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "import_ngsadmix_q_v1.schema.json",
+  "title": "import_ngsadmix_q_v1 — manifest contract for K-templated NGSadmix Q-matrix capture",
+  "description": "Validates POST /api/actions when type='import_ngsadmix_q'. Wraps GET /api/population/ngsadmix/q/{K} (population_endpoint.py) and emits one staging_ngsadmix_q_v0 layer per call. K must be in the sweep range [2, 12] (matches NGSADMIX_K_MIN/MAX in population_endpoint.py).",
+  "type": "object",
+  "required": ["target"],
+  "additionalProperties": true,
+  "properties": {
+    "target": {
+      "type": "object",
+      "required": ["K"],
+      "additionalProperties": true,
+      "properties": {
+        "K": { "type": "integer", "minimum": 2, "maximum": 12 }
+      }
+    },
+    "params": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

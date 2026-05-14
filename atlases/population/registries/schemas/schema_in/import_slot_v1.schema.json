@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "import_slot_v1.schema.json",
+  "title": "import_slot_v1 — manifest contract for population-atlas JSON-slot capture",
+  "description": "Validates POST /api/actions when type='import_slot'. Wraps GET /api/population/{slot} (the population_endpoint.py sidecar) and emits a staging_population_slot_v0 layer. target.slot must be one of the eight non-templated slots exposed by GET /api/population/slots: per_sample_stats, family_clusters, inversion_carriers, marker_controls, hatchery_health_cohorts, pcangsd_pca, ngsrelate_kinship, module_qc_summary. K-templated NGSadmix Q matrices use 'import_ngsadmix_q' (different action because the URL carries the K parameter).",
+  "type": "object",
+  "required": ["target"],
+  "additionalProperties": true,
+  "properties": {
+    "target": {
+      "type": "object",
+      "required": ["slot"],
+      "additionalProperties": true,
+      "properties": {
+        "slot": {
+          "type": "string",
+          "enum": [
+            "per_sample_stats",
+            "family_clusters",
+            "inversion_carriers",
+            "marker_controls",
+            "hatchery_health_cohorts",
+            "pcangsd_pca",
+            "ngsrelate_kinship",
+            "module_qc_summary"
+          ]
+        }
+      }
+    },
+    "params": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}
