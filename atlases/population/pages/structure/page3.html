@@ -32,38 +32,44 @@
         <div class="card-title">Planned panels</div>
         <div class="card-status planned">phase B work</div>
       </div>
+      <!-- Each panel-slot is tagged with data-pa-slot. page3.js's
+           mount-time envelope probe matches these against the action
+           pipeline's three population layer types (ngsadmix_q,
+           population_slot, ancestry_q) and appends a one-line status
+           summary inside each .panel-slot-foot. See page3.js
+           §_renderPanelEnvelopeStatus for the slot ↔ layer mapping. -->
       <div class="pop-panels-2col">
-        <div class="panel-slot">
+        <div class="panel-slot" data-pa-slot="ngsadmix_q_round1">
           <div class="panel-slot-title">NGSadmix Q-bar plot — round 1</div>
           <div class="panel-slot-desc">All 226 samples, K=2/3/4/5 stacked bars; sorted by dominant Q assignment.</div>
           <div class="panel-slot-mockup">░░░ Q-bar mockup ░░░</div>
           <div class="panel-slot-foot">feeds: MODULE_2B NGSadmix output</div>
         </div>
-        <div class="panel-slot">
+        <div class="panel-slot" data-pa-slot="ngsadmix_q_round2">
           <div class="panel-slot-title">NGSadmix Q-bar plot — round 2</div>
           <div class="panel-slot-desc">81 unrelated samples (NAToRA-pruned), same K range; cleaner population-level signal.</div>
           <div class="panel-slot-mockup">░░░ Q-bar mockup ░░░</div>
           <div class="panel-slot-foot">feeds: MODULE_2B NGSadmix on pruned subset</div>
         </div>
-        <div class="panel-slot">
+        <div class="panel-slot" data-pa-slot="ngsrelate_kinship">
           <div class="panel-slot-title">Kinship heatmap</div>
           <div class="panel-slot-desc">Pairwise π̂ (ngsRelate) sample × sample, with broodline annotation.</div>
           <div class="panel-slot-mockup">░░░ heatmap mockup ░░░</div>
           <div class="panel-slot-foot">feeds: ngsRelate output</div>
         </div>
-        <div class="panel-slot">
+        <div class="panel-slot" data-pa-slot="natora">
           <div class="panel-slot-title">NAToRA pruning diagram</div>
           <div class="panel-slot-desc">Hungarian-algorithm graph — kept/removed samples shown as connected components above π̂ threshold.</div>
           <div class="panel-slot-mockup">░░░ graph mockup ░░░</div>
           <div class="panel-slot-foot">feeds: NAToRA output + ngsRelate matrix</div>
         </div>
-        <div class="panel-slot">
+        <div class="panel-slot" data-pa-slot="pcangsd_pca">
           <div class="panel-slot-title">PCAngsd PCA</div>
           <div class="panel-slot-desc">Genome-wide PC1 vs PC2 colored by family + broodline; outliers flagged.</div>
           <div class="panel-slot-mockup">░░░ PCA mockup ░░░</div>
           <div class="panel-slot-foot">feeds: PCAngsd genome-wide</div>
         </div>
-        <div class="panel-slot">
+        <div class="panel-slot" data-pa-slot="evaladmix">
           <div class="panel-slot-title">evalAdmix residuals</div>
           <div class="panel-slot-desc">Per-K residual heatmap; choosing K with lowest residual structure.</div>
           <div class="panel-slot-mockup">░░░ residuals mockup ░░░</div>
